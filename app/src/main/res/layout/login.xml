@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/user"/>
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:id="@+id/et_login_name"
+            android:text="用户名/手机号"
+            android:layout_marginLeft="20dp"
+            android:textColor="?attr/colorControlHighlight" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@drawable/pwd"/>
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:id="@+id/et_login_pwd"
+            android:text="密码"
+            android:layout_marginLeft="20dp"
+            android:textColor="?attr/colorControlHighlight" />
+    </LinearLayout>
+
+    <CheckBox
+        android:text="    记住我"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/cb_login_remeber"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:id="@+id/iv_login_tips"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/tips"/>
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:id="@+id/tv_login_tips"
+            android:text="提示信息"
+            android:layout_marginLeft="20dp"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:id="@+id/bt_login_l"
+        android:text="登 录"/>
+
+</LinearLayout>

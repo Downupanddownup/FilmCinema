@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.example.hopjs.filmcinema.widgets.MyScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/ll_film0detail_footer">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rl_film0detail_rl">
+
+                <include
+                    android:id="@+id/i_film0detail_finfor"
+                    layout="@layout/film0detail_finfor"
+                    android:layout_width="match_parent"
+                    android:layout_height="270dp" />
+
+                <fragment
+                    android:id="@+id/f_film0detail_workers"
+                    android:name="com.example.hopjs.filmcinema.UI.Fragment.WorkersFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/i_film0detail_finfor"
+                    android:layout_marginTop="10dp" />
+
+                <fragment
+                    android:id="@+id/f_film0detail_critics"
+                    android:name="com.example.hopjs.filmcinema.UI.Fragment.CriticsFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/f_film0detail_workers"
+                    android:layout_marginTop="10dp" />
+            </RelativeLayout>
+        </com.example.hopjs.filmcinema.widgets.MyScrollView>
+        <include layout="@layout/header"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/ll_film0detail_footer"
+            android:orientation="horizontal">
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/pcenter_activity_critic"
+                android:scaleType="fitCenter"
+                android:background="@color/colorYellow"
+                android:id="@+id/ibt_film0detail_critic"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"/>
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/like"
+                android:scaleType="fitCenter"
+                android:background="@color/colorYellow"
+                android:layout_weight="1"
+                android:id="@+id/ibt_film0detail_collect"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"/>
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:src="@drawable/buy"
+                android:background="@color/colorYellow"
+                android:scaleType="fitCenter"
+                android:id="@+id/ibt_film0detail_buy"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left">
+        <fragment
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:id="@+id/f_film0detail_sidebar"
+            android:name="com.example.hopjs.filmcinema.UI.Fragment.SidebarFragment"/>
+    </RelativeLayout>
+
+</android.support.v4.widget.DrawerLayout>

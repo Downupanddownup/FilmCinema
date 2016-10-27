@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+<ImageView
+    android:layout_width="80dp"
+    android:layout_height="100dp"
+    android:scaleType="fitXY"
+    android:src="@drawable/f"
+    android:id="@+id/iv_cdetail_film_item"/>
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="170dp"
+    android:layout_height="350dp"
+    android:orientation="vertical"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="日期"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:id="@+id/tv_home0page_upcoming_date"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+
+    <ImageView
+        android:layout_width="170dp"
+        android:layout_height="200dp"
+        android:scaleType="fitXY"
+        android:id="@+id/iv_home0page_upcoming_poster"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="电影"
+        android:textSize="25dp"
+        android:gravity="center"
+        android:id="@+id/tv_home0page_upcoming_name"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="评分"
+        android:textSize="20dp"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"
+        android:id="@+id/tv_home0page_upcoming_scord"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+</LinearLayout>

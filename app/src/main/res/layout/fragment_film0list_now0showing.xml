@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="210dp"
+    android:orientation="vertical">
+<android.support.v7.widget.CardView
+
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_fragment_film0list_now0showing_poster"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:text="电影"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/iv_fragment_film0list_now0showing_poster"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:textSize="25dp"
+            android:id="@+id/tv_fragment_film0list_now0showing_name" />
+
+        <TextView
+            android:text="8.9"
+            android:textSize="55dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_fragment_film0list_now0showing_name"
+            android:layout_toEndOf="@+id/tv_fragment_film0list_now0showing_name"
+            android:layout_marginLeft="80dp"
+            android:id="@+id/tv_fragment_film0list_now0showing_scord" />
+
+        <TextView
+            android:text="今日放映影院数：300家"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_fragment_film0list_now0showing_name"
+            android:layout_marginTop="30dp"
+            android:layout_alignStart="@+id/tv_fragment_film0list_now0showing_name"
+            android:id="@+id/tv_fragment_film0list_now0showing_cinema0num" />
+
+        <TextView
+            android:text="放映场次数量：3256场"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/tv_fragment_film0list_now0showing_cinema0num"
+            android:layout_marginBottom="30dp"
+            android:id="@+id/tv_fragment_film0list_now0showing_showing0times" />
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+</LinearLayout>

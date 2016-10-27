@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="杭州"
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/tv_cinema_header_city"/>
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/tv_cinema_header_city"
+        android:src="@drawable/choose"
+        android:scaleType="centerInside"
+        android:layout_alignTop="@+id/tv_cinema_header_city"
+        android:id="@+id/iv_cinema_header_choose"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="影院"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/tv_cinema_header_title"/>
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="20dp"
+        android:id="@+id/iv_cinema_header_search"
+        android:src="@drawable/search"/>
+
+</RelativeLayout>
