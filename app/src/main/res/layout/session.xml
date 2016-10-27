@@ -10,9 +10,9 @@
         android:layout_height="59dp"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:text="6号厅"
+            android:text="60号厅"
             android:textSize="20dp"
             android:gravity="center"
             android:id="@+id/tv_session_videonum"/>

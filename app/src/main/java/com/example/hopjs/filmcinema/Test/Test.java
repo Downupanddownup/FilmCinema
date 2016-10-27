@@ -15,6 +15,7 @@ import com.example.hopjs.filmcinema.Adapter.TicketRecordAdapter;
 import com.example.hopjs.filmcinema.Adapter.WorkersAdapter;
 import com.example.hopjs.filmcinema.Data.Cinema;
 import com.example.hopjs.filmcinema.R;
+import com.example.hopjs.filmcinema.UI.CinemaDetail;
 import com.example.hopjs.filmcinema.UI.MyCritic;
 
 import java.util.ArrayList;
@@ -187,5 +188,51 @@ public class Test {
             ticketRecords.add(ticketRecord);
         }
         return ticketRecords;
+    }
+    public static ArrayList<CinemaDetail.Session> getSessions(String filmId,String cinemaId){
+        ArrayList<CinemaDetail.Session> sessions = new ArrayList<>();
+        for(int i=0; i<10;++i){
+            CinemaDetail.Session session = new CinemaDetail.Session();
+            String date = "";
+            switch (i%3){
+                case 0:
+                    date = "2016.10.27";
+                    break;
+                case 1:
+                    date = "2016.10.28";
+                    break;
+                case 2:
+                    date = "2016.10.29";
+                    break;
+            }
+            session.setDate(date);
+            session.setFilmId(filmId);
+            session.setPrice(40+i+"");
+            session.setSessionId(i*8+"");
+            session.setTime(10+i+":20");
+            session.setVideoHallNum(i%5+"");
+            sessions.add(session);
+        }
+        return  sessions;
+    }
+    public static ArrayList<CinemaDetail.Film> getFilms(String cinemaId){
+        ArrayList<CinemaDetail.Film> films = new ArrayList<>();
+        for(int i=0; i<6; ++i){
+            CinemaDetail.Film film = new CinemaDetail.Film();
+            film.setId(i+"");
+            film.setName("电影："+i);
+            film.setPosterId(getPicture(i*89+10));
+            film.setScord((float)(i/2.0+6)/2);
+            films.add(film);
+        }
+        return films;
+    }
+    public static CinemaDetail.Cinema getCinema(String cinemaId){
+        CinemaDetail.Cinema cinema = new CinemaDetail.Cinema();
+        cinema.setId(cinemaId);
+        cinema.setAddress("昌耀路3号");
+        cinema.setName("1234556影院");
+        cinema.setPhone("9876543212");
+        return cinema;
     }
 }

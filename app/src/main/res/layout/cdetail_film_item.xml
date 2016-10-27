@@ -2,12 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp">
-<ImageView
-    android:layout_width="80dp"
-    android:layout_height="100dp"
-    android:scaleType="fitXY"
-    android:src="@drawable/f"
-    android:id="@+id/iv_cdetail_film_item"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.CardView
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:background="@android:color/background_dark"
+            android:id="@+id/iv_cdetail_film_item"/>
+    </android.support.v7.widget.CardView>
+
 </LinearLayout>

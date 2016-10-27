@@ -18,6 +18,7 @@ import com.example.hopjs.filmcinema.UI.MyCritic;
 import com.example.hopjs.filmcinema.UI.Question;
 import com.example.hopjs.filmcinema.UI.Register;
 import com.example.hopjs.filmcinema.UI.Search;
+import com.example.hopjs.filmcinema.UI.SeatChoose;
 import com.example.hopjs.filmcinema.UI.TicketRecord;
 
 /**
@@ -33,6 +34,13 @@ public class Transform {
     public static void toCinemaDetail(Activity activity,String cinemaId){
         Intent intent = new Intent(activity, CinemaDetail.class);
         intent.putExtra("id",cinemaId);
+        activity.startActivity(intent);
+    }
+    public static void toSeatChoose(Activity activity,String cinemaId,String filmId,String sessionId){
+        Intent intent = new Intent(activity, SeatChoose.class);
+        intent.putExtra("cinemaId",cinemaId);
+        intent.putExtra("filmId",filmId);
+        intent.putExtra("sessionId",sessionId);
         activity.startActivity(intent);
     }
     public static void toRegister(Activity activity){
