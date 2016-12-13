@@ -21,6 +21,7 @@ import android.widget.ImageView;
 
 import com.example.hopjs.filmcinema.Common.Transform;
 import com.example.hopjs.filmcinema.Data.FilmList;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Adapter.FilmListAdapter;
 import com.example.hopjs.filmcinema.Test.Test;
@@ -43,6 +44,7 @@ public class FilmListFragment extends Fragment {
     private int lastVisibleItem;
     private LinearLayoutManager linearLayoutManager;
     private int type = FilmListAdapter.TYPE_NOWSHOWING;
+    private int start;
 
     @Nullable
     @Override
@@ -69,6 +71,7 @@ public class FilmListFragment extends Fragment {
             }
         });
 
+        start = 0;
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -114,6 +117,7 @@ public class FilmListFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
+            start = 0;
             loadFilmListDatas();
         }
     };
@@ -122,21 +126,12 @@ public class FilmListFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                filmLists = new ArrayList<>();
-                for(int i=0; i<10;++i){
-                    FilmList filmList = new FilmList();
-                    filmList.setId(i+"");
-                    filmList.setName("电影"+i);
-                    filmList.setScord(i*8%10+5+"");
-                    /*filmList.setPoster(getPoster(i));*/
-                    filmList.setPosterResourceId(Test.getPicture(i));
-                    filmList.setType("类型："+i);
-                    filmList.setDate("2016年10月"+i+"日");
-                    filmList.setCinemaNum(i*55+i*10+i+"");
-                    filmList.setShowingTimes(12*(66*i)+"");
-                    filmLists.add(filmList);
+                if(type == FilmFragment.NOWSHOWING) {
+                    filmLists = Connect.getNowShowingData_FilmList(start+"");
+                }else {
+                    filmLists = Connect.getUpcomingData_FilmList(start+"");
                 }
-
+                start += 10;
                 Message message = new Message();
                 message.arg1 = LOAD_MORE;
                 handler.sendMessage(message);
@@ -154,21 +149,13 @@ public class FilmListFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                filmLists = new ArrayList<>();
-                for(int i=0; i<10;++i){
-                    FilmList filmList = new FilmList();
-                    filmList.setId(i+"");
-                    filmList.setName("电影"+i);
-                    filmList.setScord(i*8%10+5+"");
-                    /*filmList.setPoster(getPoster(i));*/
-                    filmList.setPosterResourceId(Test.getPicture(i));
-                    filmList.setType("类型："+i);
-                    filmList.setDate("2016年10月"+i+"日");
-                    filmList.setCinemaNum(i*55+i*10+i+"");
-                    filmList.setShowingTimes(12*(66*i)+"");
-                    filmLists.add(filmList);
+                //filmLists = Test.getFilmList();
+                if(type == FilmFragment.NOWSHOWING) {
+                    filmLists = Connect.getNowShowingData_FilmList(start+"");
+                }else {
+                    filmLists = Connect.getUpcomingData_FilmList(start+"");
                 }
-
+                start += 10;
                 Message message = new Message();
                 message.arg1 = FIRST_LOAD;
                 handler.sendMessage(message);

@@ -27,6 +27,7 @@ import com.example.hopjs.filmcinema.Adapter.HomePageFilmAdapter;
 import com.example.hopjs.filmcinema.Common.Transform;
 import com.example.hopjs.filmcinema.Data.HomePageFilm;
 import com.example.hopjs.filmcinema.MainActivity;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 
@@ -206,7 +207,8 @@ public class HomePageFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                nowShowingDatas = getDatas();
+                // nowShowingDatas = getDatas();
+                  nowShowingDatas = Connect.getNowShowingData_HomepageFilm();
                 Message msg = new Message();
                 msg.arg1 = MESSAGE_NOWSHOWING;
                 handler.sendMessage(msg);
@@ -217,7 +219,8 @@ public class HomePageFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                upcomingDatas = getDatas();
+                // upcomingDatas = getDatas();
+                upcomingDatas = Connect.getUpcomingData_HomepageFilm();
                 Message msg = new Message();
                 msg.arg1 = MESSAGE_UPCOMGING;
                 handler.sendMessage(msg);
@@ -241,15 +244,15 @@ public class HomePageFragment extends Fragment {
     private void setNowShowingData(){
         HomePageFilmAdapter homePageFilmAdapter = new HomePageFilmAdapter(getActivity(),
                 nowShowingDatas, HomePageFilmAdapter.UPCOMING,nowShowingListener);
-        upcoming.setLayoutManager(new StaggeredGridLayoutManager
+        nowShowing.setLayoutManager(new StaggeredGridLayoutManager
                 (1,StaggeredGridLayoutManager.HORIZONTAL));
-        upcoming.setAdapter(homePageFilmAdapter);
+        nowShowing.setAdapter(homePageFilmAdapter);
     }
     private void setUpcomingData(){
         HomePageFilmAdapter homePageFilmAdapter2 = new HomePageFilmAdapter
                 (getActivity(),upcomingDatas, HomePageFilmAdapter.NOWSHOWING,upcomingListener);
-        nowShowing.setLayoutManager(new StaggeredGridLayoutManager
+        upcoming.setLayoutManager(new StaggeredGridLayoutManager
                 (1,StaggeredGridLayoutManager.HORIZONTAL));
-        nowShowing.setAdapter(homePageFilmAdapter2);
+        upcoming.setAdapter(homePageFilmAdapter2);
     }
 }

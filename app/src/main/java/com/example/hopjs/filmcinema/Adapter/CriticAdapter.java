@@ -40,7 +40,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
         private String id;
         private String name;
         private int portraitId;
-        private int scord;
+        private float scord;
         private String date;
         private String praise;
         private String content;
@@ -82,7 +82,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             this.name = name;
         }
 
-        public int getScord() {
+        public float getScord() {
             return scord;
         }
 
@@ -90,7 +90,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             this.portraitId = portraitId;
         }
 
-        public void setScord(int scord) {
+        public void setScord(float scord) {
             this.scord = scord;
         }
 

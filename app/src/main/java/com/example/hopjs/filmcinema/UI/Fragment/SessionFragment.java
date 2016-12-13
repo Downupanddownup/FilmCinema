@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.hopjs.filmcinema.Adapter.SessionAdapter;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 import com.example.hopjs.filmcinema.TestCell;
@@ -119,12 +120,9 @@ public class SessionFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                sessions = Test.getSessions(filmId,cinemaId);
-                try {
-                    Thread.sleep(1000);
-                }catch (Exception e){
+               // sessions = Test.getSessions(filmId,cinemaId);
+                sessions = Connect.getSession_CinemaDetail(cinemaId,filmId);
 
-                }
                 handler.sendMessage(new Message());
             }
         }.start();

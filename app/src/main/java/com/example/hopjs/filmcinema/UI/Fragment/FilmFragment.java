@@ -27,8 +27,8 @@ import com.example.hopjs.filmcinema.TestCell;
 
 public class FilmFragment extends Fragment {
 
-    final int NOWSHOWING = 1;
-    final int UPCOMGING = 2;
+    public static final int NOWSHOWING = 1;
+    public static final int UPCOMGING = 2;
 
     private ImageView ivReturn,ivSearch;
     private ViewPager vpFilmList;

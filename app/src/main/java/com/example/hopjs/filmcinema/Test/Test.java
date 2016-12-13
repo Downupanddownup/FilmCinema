@@ -14,6 +14,8 @@ import com.example.hopjs.filmcinema.Adapter.MyCriticAdapter;
 import com.example.hopjs.filmcinema.Adapter.TicketRecordAdapter;
 import com.example.hopjs.filmcinema.Adapter.WorkersAdapter;
 import com.example.hopjs.filmcinema.Data.Cinema;
+import com.example.hopjs.filmcinema.Data.FilmList;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.UI.CinemaDetail;
 import com.example.hopjs.filmcinema.UI.MyCritic;
@@ -235,4 +237,23 @@ public class Test {
         cinema.setPhone("9876543212");
         return cinema;
     }
+
+    public static ArrayList<FilmList> getFilmList(){
+        ArrayList<FilmList> filmListArrayList = new ArrayList<FilmList>();
+        for(int i=0; i<10;++i){
+            FilmList filmList = new FilmList();
+            filmList.setId(i+"");
+            filmList.setName("电影"+i);
+            filmList.setScord(i*8%10+5+"");
+                    /*filmList.setPoster(getPoster(i));*/
+            filmList.setPosterResourceId(Test.getPicture(i));
+            filmList.setType("类型："+i);
+            filmList.setDate("2016年10月"+i+"日");
+            filmList.setCinemaNum(i*55+i*10+i+"");
+            filmList.setShowingTimes(12*(66*i)+"");
+            filmListArrayList.add(filmList);
+        }
+        return filmListArrayList;
+    }
+
 }

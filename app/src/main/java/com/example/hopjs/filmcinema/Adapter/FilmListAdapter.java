@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.Data.FilmList;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 
 import java.util.ArrayList;
@@ -95,9 +97,17 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
             holder.id = filmLists.get(position).getId();
           //  holder.poster.setImageBitmap(filmLists.get(position).getPoster());
             /*holder.poster.setImageResource(filmLists.get(position).getPosterResourceId());*/
-            Bitmap bitmap = ((MyApplication)context.getApplicationContext()).bitmapCache
+            /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).bitmapCache
                     .getBitmap(filmLists.get(position).getPosterResourceId(),context,0.05);
-            holder.poster.setImageBitmap(bitmap);
+            holder.poster.setImageBitmap(bitmap);*/
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
+            temUrl.addHeader("filmId",filmLists.get(position).getId());
+            Glide.with(context)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(holder.poster);
             holder.name.setText(filmLists.get(position).getName());
             holder.scord.setText(filmLists.get(position).getScord());
             if (type == TYPE_NOWSHOWING) {

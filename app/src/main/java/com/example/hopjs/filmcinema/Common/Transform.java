@@ -11,6 +11,7 @@ import com.example.hopjs.filmcinema.UI.About;
 import com.example.hopjs.filmcinema.UI.CinemaChoose;
 import com.example.hopjs.filmcinema.UI.CinemaDetail;
 import com.example.hopjs.filmcinema.UI.Collection;
+import com.example.hopjs.filmcinema.UI.Confirm;
 import com.example.hopjs.filmcinema.UI.Critic;
 import com.example.hopjs.filmcinema.UI.FilmDetail;
 import com.example.hopjs.filmcinema.UI.Help;
@@ -28,7 +29,7 @@ import com.example.hopjs.filmcinema.UI.TicketRecord;
 public class Transform {
     public static void toFilmDetail(Activity activity,String filmId){
         Intent intent = new Intent(activity, FilmDetail.class);
-        intent.putExtra("id",filmId);
+        intent.putExtra("filmId",filmId);
         activity.startActivity(intent);
     }
     public static void toCinemaDetail(Activity activity,String cinemaId){
@@ -103,6 +104,10 @@ public class Transform {
     public static void toCritic(Activity activity,String filmId){
         Intent intent = new Intent(activity, Critic.class);
         intent.putExtra("filmId",filmId);
+        activity.startActivity(intent);
+    }
+    public static void toConfirm(Activity activity){
+        Intent intent = new Intent(activity, Confirm.class);
         activity.startActivity(intent);
     }
 }

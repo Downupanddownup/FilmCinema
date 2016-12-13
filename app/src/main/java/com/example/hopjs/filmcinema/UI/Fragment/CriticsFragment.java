@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hopjs.filmcinema.Adapter.CriticAdapter;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 
@@ -30,6 +31,7 @@ public class CriticsFragment extends Fragment {
     private CriticAdapter criticAdapter;
     private ArrayList<CriticAdapter.Critic> critics;
     private Handler handler;
+    private int start;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class CriticsFragment extends Fragment {
             }
         };
 
+        start = 0;
         return view;
     }
 
@@ -62,7 +65,9 @@ public class CriticsFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                critics = Test.getCritics(5);
+                //critics = Test.getCritics(5);
+                critics = Connect.getCritic_FilmDeatil(filmId,start+"");
+                start += 10;
                 Message message = new Message();
                 message.arg1 = MESSAGE_FIRST;
                 handler.sendMessage(message);
@@ -81,7 +86,9 @@ public class CriticsFragment extends Fragment {
             new Thread(){
                 @Override
                 public void run() {
-                    critics = Test.getCritics(10);
+                   // critics = Test.getCritics(10);
+                    critics = Connect.getCritic_FilmDeatil(filmId,start+"");
+                    start += 10;
                     Message message = new Message();
                     message.arg1 = MESSAGE_MORE;
                     handler.sendMessage(message);

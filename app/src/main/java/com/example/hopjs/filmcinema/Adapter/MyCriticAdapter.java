@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
     public static class Critic{
         private String filmId;
         private String filmName;
-        private int scord;
+        private float scord;
         private String date;
         private String praise;
         private String content;
@@ -61,11 +63,11 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
             this.content = content;
         }
 
-        public int getScord() {
+        public float getScord() {
             return scord;
         }
 
-        public void setScord(int scord) {
+        public void setScord(float scord) {
             this.scord = scord;
         }
 
@@ -218,6 +220,14 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
             Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(portraitId,context,0.01);
             holder.ivPortrait.setImageBitmap(bitmap);
+            /*Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
+            temUrl.addHeader("filmId",critics.get(position).getId());
+            Glide.with(context)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(holder.ivPortrait);*/
         }
     }
 

@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 
 import java.util.ArrayList;
@@ -148,16 +150,32 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
         if(position == 0){
             holder.id = director.getId();
             holder.tvName.setText(director.getName());
-            Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
+            /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(director.getPortraitId(),context,0.2);
-            holder.ivPortrait.setImageBitmap(bitmap);
+            holder.ivPortrait.setImageBitmap(bitmap);*/
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
+            temUrl.addHeader("filmId",director.getPortraitId()+"");
+            Glide.with(context)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(holder.ivPortrait);
         }else if(position < getItemCount()-1){
             holder.id = actors.get(position-1).getId();
             holder.tvName.setText(actors.get(position-1).getName());
             holder.tvRoleorD.setText(actors.get(position-1).getRole());
-            Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
+            /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(actors.get(position-1).getPortraitId(),context,0.05);
-            holder.ivPortrait.setImageBitmap(bitmap);
+            holder.ivPortrait.setImageBitmap(bitmap);*/
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
+            temUrl.addHeader("filmId",actors.get(position-1).getPortraitId()+"");
+            Glide.with(context)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(holder.ivPortrait);
         }
     }
 

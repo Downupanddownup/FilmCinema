@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.Data.HomePageFilm;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 
 import java.util.ArrayList;
@@ -82,9 +84,17 @@ public class HomePageFilmAdapter extends RecyclerView.Adapter<HomePageFilmAdapte
             holder.date.setText(mDatas.get(position).getDate());
         }
        // holder.poster.setImageBitmap(mDatas.get(position).getPoster());
-        Bitmap bitmap = ((MyApplication)context.getApplicationContext()).bitmapCache.
+        /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).bitmapCache.
                 getBitmap(mDatas.get(position).getPosterResourceId(),context,0.05);
-        holder.poster.setImageBitmap(bitmap);
+        holder.poster.setImageBitmap(bitmap);*/
+        Connect.TemUrl temUrl = new Connect.TemUrl();
+        temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
+        temUrl.addHeader("filmId","");
+        Glide.with(context)
+                .load(temUrl.getSurl())
+                .placeholder(R.drawable.x)
+                .error(R.drawable.w)
+                .into(holder.poster);
         holder.name.setText(mDatas.get(position).getName());
         holder.scord.setText(mDatas.get(position).getScord());
         holder.id = mDatas.get(position).getId();

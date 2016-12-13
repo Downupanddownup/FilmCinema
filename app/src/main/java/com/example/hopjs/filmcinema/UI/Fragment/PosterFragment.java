@@ -14,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.Adapter.BigPosterAdatper;
 import com.example.hopjs.filmcinema.Common.Transform;
 import com.example.hopjs.filmcinema.Data.FilmList;
 import com.example.hopjs.filmcinema.Data.HomePageFilm;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 
@@ -152,14 +154,22 @@ public class PosterFragment extends Fragment {
         ArrayList<BigPosterAdatper.PagerHolder> films = new ArrayList<>();
         for(FilmList film:posters){
             ImageView imageView = new ImageView(getActivity());
-            Bitmap bitmap = ((MyApplication)getContext().getApplicationContext()).bitmapCache.
+            /*Bitmap bitmap = ((MyApplication)getContext().getApplicationContext()).bitmapCache.
                     getBitmap(film.getPosterResourceId(),getContext(),0.1);
-            imageView.setImageBitmap(bitmap);
+            imageView.setImageBitmap(bitmap);*/
             /*ViewGroup.LayoutParams params = imageView.getLayoutParams();
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             imageView.setLayoutParams(params);*/
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            //imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
+            temUrl.addHeader("filmId","");
+            Glide.with(this)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(imageView);
             BigPosterAdatper.PagerHolder pagerHolder = new BigPosterAdatper.PagerHolder();
             pagerHolder.poster = imageView;
             pagerHolder.id = "1";
@@ -188,7 +198,8 @@ public class PosterFragment extends Fragment {
 
         @Override
         public void run() {
-            posters = getDatas();
+            //posters = getDatas();
+            posters = Connect.getBigPosters_HomePageFilm();
             Message msg = new Message();
             msg.arg1 = MESSAGE_LOADFINISHED;
             msg.obj = (Object)mhandler;

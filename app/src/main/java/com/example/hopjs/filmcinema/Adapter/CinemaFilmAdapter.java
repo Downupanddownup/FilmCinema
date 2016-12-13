@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.UI.CinemaDetail;
 
@@ -65,9 +67,17 @@ public class CinemaFilmAdapter extends RecyclerView.Adapter<CinemaFilmAdapter.Vi
         }else {
             holder.index = position;
             holder.id = films.get(position-1).getId();
-            Bitmap bitmap = ((MyApplication)context.getApplicationContext()).bitmapCache
+           /* Bitmap bitmap = ((MyApplication)context.getApplicationContext()).bitmapCache
                     .getBitmap(films.get(position-1).getPosterId(),context,0.1);
-            holder.ivPoster.setImageBitmap(bitmap);
+            holder.ivPoster.setImageBitmap(bitmap);*/
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
+            temUrl.addHeader("filmId",films.get(position-1).getId());
+            Glide.with(context)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(holder.ivPoster);
         }
     }
 

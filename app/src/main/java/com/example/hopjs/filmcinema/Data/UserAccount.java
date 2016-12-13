@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 public class UserAccount {
     private int portraitId;
     private String name;
+    private String userId;
     private String sex;
     private String bphone;
     private String pwd;
@@ -18,6 +19,14 @@ public class UserAccount {
     public UserAccount() {
         setportrait = false;
         login = false;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public int getPortraitId() {

@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 
 import java.util.ArrayList;
@@ -172,9 +174,17 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             holder.tvScord.setText(collections.get(position).getScord());
             holder.tvTime.setText(collections.get(position).getTime());
             holder.tvType.setText(collections.get(position).getType());
-            Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
+            /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(collections.get(position).getPosterId(),context,0.3);
-            holder.ivPoster.setImageBitmap(bitmap);
+            holder.ivPoster.setImageBitmap(bitmap);*/
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
+            temUrl.addHeader("filmId",collections.get(position).getId());
+            Glide.with(context)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(holder.ivPoster);
         }
     }
 

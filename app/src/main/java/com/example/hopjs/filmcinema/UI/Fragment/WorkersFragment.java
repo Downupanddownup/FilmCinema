@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hopjs.filmcinema.Adapter.WorkersAdapter;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
@@ -34,6 +35,7 @@ public class WorkersFragment extends Fragment {
     private WorkersAdapter workersAdapter;
     private Handler handler;
     private ExpandableTextView expandableTextView;
+    private int start;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class WorkersFragment extends Fragment {
             }
         };
 
+        start = 0;
         return  view;
     }
 
@@ -103,9 +106,13 @@ public class WorkersFragment extends Fragment {
             public void run() {
                 Message message = new Message();
                 message.arg1 = MESSAGE_DANDA;
-                expandableTextView.setText(Test.getPlot());
-                director = Test.getDirector();
-                actors = Test.getActors();
+                //expandableTextView.setText(Test.getPlot());
+                expandableTextView.setText(Connect.getPlot(filmId));
+                //director = Test.getDirector();
+                director = Connect.getDirector_FilmDeatil(filmId);
+               // actors = Test.getActors();
+                actors = Connect.getActors_FilmDeatail(filmId,start+"");
+                start += 10;
                 handler.sendMessage(message);
             }
         }.start();
@@ -116,7 +123,9 @@ public class WorkersFragment extends Fragment {
             public void run() {
                 Message message = new Message();
                 message.arg1 = MESSAGE_MORE;
-                actors = Test.getActors();
+                //actors = Test.getActors();
+                actors = Connect.getActors_FilmDeatail(filmId,start+"");
+                start += 10;
                 handler.sendMessage(message);
             }
         }.start();
