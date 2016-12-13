@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.example.hopjs.filmcinema.Adapter.MyCriticAdapter;
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 
@@ -39,6 +41,8 @@ public class MyCritic extends AppCompatActivity {
     private int portraitId;
     private int lastVisibleItem;
     private Handler handler;
+    private int start;
+    private String userId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +74,8 @@ public class MyCritic extends AppCompatActivity {
         tvTitle.setText("我 的 影 评");
         ivReturn.setOnClickListener(clickListener);
         ivSearch.setOnClickListener(clickListener);
+        start = 0;
+        userId = ((MyApplication)getApplicationContext()).userAccount.getUserId();
         loadCritics();
     }
 
@@ -88,7 +94,9 @@ public class MyCritic extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                critics = Test.getMyCritics(10);
+                //critics = Test.getMyCritics(10);
+                critics = Connect.getMycritic(userId,start+"");
+                start += 10;
                 handler.sendMessage(new Message());
             }
         }.start();
@@ -98,7 +106,9 @@ public class MyCritic extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                critics = Test.getMyCritics(lastVisibleItem);
+               // critics = Test.getMyCritics(lastVisibleItem);
+                critics = Connect.getMycritic(userId,start+"");
+                start += 10;
                 Message message = new Message();
                 message.arg1 = MESSAGE_MORE;
                 handler.sendMessage(message);
@@ -116,10 +126,10 @@ public class MyCritic extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.iv_header_search:
-                    Test.showToast(MyCritic.this,"你点击了搜索按钮");
+                    Transform.toSearch(MyCritic.this);
                     break;
                 case R.id.iv_header_return:
-                    Test.showToast(MyCritic.this,"你点击了返回按钮");
+                    finish();
                     break;
             }
         }
@@ -127,6 +137,7 @@ public class MyCritic extends AppCompatActivity {
     private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
+            start = 0;
             loadCritics();
         }
     };

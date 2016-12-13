@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TestCell">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +19,7 @@
         <activity android:name=".UI.MyCritic"/>
         <activity android:name=".UI.TicketRecord"/>
         <activity android:name=".UI.About"/>
-        <!--<activity android:name=".UI.CinemaChoose"/>-->
+        <activity android:name=".UI.CinemaChoose"/>
         <activity android:name=".UI.CinemaDetail"/>
         <activity android:name=".UI.Collection"/>
         <activity android:name=".UI.Confirm"/>
@@ -31,5 +31,5 @@
         <activity android:name=".UI.Search"/>
         <activity android:name=".UI.SeatChoose"/>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

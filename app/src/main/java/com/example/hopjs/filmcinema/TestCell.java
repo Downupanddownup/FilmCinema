@@ -71,7 +71,7 @@ public class TestCell extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cdetail);
+        setContentView(R.layout.seat0choose);
 
 
     }

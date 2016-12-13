@@ -284,7 +284,7 @@ public class Register extends AppCompatActivity {
                     Test.showToast(Register.this,"你点击了取消按钮");
                     break;
                 case R.id.iv_header_return:
-                    Test.showToast(Register.this,"你点击了返回按钮");
+                    finish();
                     break;
             }
         }

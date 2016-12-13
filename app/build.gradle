@@ -20,16 +20,18 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile project (':pager-bottom-tab-strip')
-    compile project (':PagerSlidingTabStrip-master')
-    compile project (':lExpandableTextView')
-    compile project (':NiftyDialogEffects-master')
+    compile project(':pager-bottom-tab-strip')
+    compile project(':PagerSlidingTabStrip-master')
+    compile project(':lExpandableTextView')
+    compile project(':NiftyDialogEffects-master')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:cardview-v7:24.2.1'
+    compile files('src/main/java/com/example/hopjs/filmcinema/Library/gson-2.4.jar')
+    compile files('src/main/java/com/example/hopjs/filmcinema/Library/glide-3.7.0.jar')
 }
