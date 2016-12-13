@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.example.hopjs.filmcinema.Adapter.CollectionAdapter;
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 
@@ -36,6 +38,8 @@ public class Collection extends AppCompatActivity {
     private ArrayList<CollectionAdapter.Collection> collections;
     private int lastVisibleItem;
     private Handler handler;
+    private int start;
+    private String userId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +68,8 @@ public class Collection extends AppCompatActivity {
         tvTitle.setText("收 藏");
         ivReturn.setOnClickListener(clickListener);
         ivSearch.setOnClickListener(clickListener);
+        start = 0;
+        userId = ((MyApplication)getApplicationContext()).userAccount.getUserId();
         loadCollections();
     }
 
@@ -82,7 +88,9 @@ public class Collection extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                collections = Test.getCollections(10);
+               // collections = Test.getCollections(10);
+                collections = Connect.getCollection(userId,start+"");
+                start += 10;
                 handler.sendMessage(new Message());
             }
         }.start();
@@ -92,7 +100,9 @@ public class Collection extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                collections = Test.getCollections(lastVisibleItem);
+                //collections = Test.getCollections(lastVisibleItem);
+                collections = Connect.getCollection(userId,start+"");
+                start += 10;
                 Message message = new Message();
                 message.arg1 = MESSAGE_MORE;
                 handler.sendMessage(message);
@@ -110,10 +120,10 @@ public class Collection extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.iv_header_search:
-                    Test.showToast(Collection.this,"你点击了搜索按钮");
+                    Transform.toSearch(Collection.this);
                     break;
                 case R.id.iv_header_return:
-                    Test.showToast(Collection.this,"你点击了返回按钮");
+                    finish();
                     break;
             }
         }
@@ -121,6 +131,7 @@ public class Collection extends AppCompatActivity {
     private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
+            start = 0;
             loadCollections();
         }
     };
