@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import com.example.hopjs.filmcinema.Adapter.CinemasAdapter;
 import com.example.hopjs.filmcinema.Common.Transform;
 import com.example.hopjs.filmcinema.Data.Cinema;
+import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 
@@ -39,13 +41,16 @@ public class CinemaListFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private int start,lastVisibleItem;
     private int type;
+    private boolean noSpecial;
+    private String filmId;
+    private String cityId;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_cinemas,container,false);
-        start = 1;
+
         srlRefresh = (SwipeRefreshLayout)view.findViewById(R.id.srl_fragment_cinemas_refresh);
         rvCinemas = (RecyclerView)view.findViewById(R.id.rv_fragment_cinemas_list);
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -81,6 +86,13 @@ public class CinemaListFragment extends Fragment {
             type = Integer.parseInt(bundle.get("type").toString());
         }
 
+        noSpecial = true;
+        if(bundle != null && bundle.get("filmId")!= null){
+            noSpecial = false;
+            filmId = bundle.get("filmId").toString();
+        }
+        start = 0;
+        cityId = ((MyApplication)getActivity().getApplicationContext()).cityId+"";
         loadCinemas();
         return view;
     }
@@ -111,7 +123,20 @@ public class CinemaListFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                cinemas = Test.getCinemas(start,10);
+                //cinemas = Test.getCinemas(start,10);
+                if(noSpecial) {
+                    if (type == TYPE_ALLCITY) {
+                        cinemas = Connect.getAllCity_CinemaList_NoSpecial(cityId,start+"");
+                    } else {
+                        cinemas = Connect.getNearby_CinemaList_NoSpecial(cityId,"jing", "wei",start+"" );
+                    }
+                }else {
+                    if (type == TYPE_ALLCITY) {
+                        cinemas = Connect.getAllCity_CinemaList_Special(filmId,cityId,start+"");
+                    } else {
+                        cinemas = Connect.getNearby_CinemaList_Special(filmId,cityId, "jing", "wei",start+"");
+                    }
+                }
                 Message message = new Message();
                 message.arg1 = LOAD_MORE_FINISHED;
                 handler.sendMessage(message);
@@ -124,12 +149,25 @@ public class CinemaListFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                start = 1;
-                cinemas = Test.getCinemas(start,10);
+               // cinemas = Test.getCinemas(start,10);
+                if(noSpecial) {
+                    if (type == TYPE_ALLCITY) {
+                        cinemas = Connect.getAllCity_CinemaList_NoSpecial(cityId,start+"");
+                    } else {
+                        cinemas = Connect.getNearby_CinemaList_NoSpecial(cityId,"jing", "wei",start+"" );
+                    }
+                }else {
+                    if (type == TYPE_ALLCITY) {
+                        cinemas = Connect.getAllCity_CinemaList_Special(filmId,cityId,start+"");
+                    } else {
+                        cinemas = Connect.getNearby_CinemaList_Special(filmId,cityId, "jing", "wei",start+"");
+                    }
+                }
+
+                start += 10;
                 Message message = new Message();
                 message.arg1 = REFRESH_FINISHED;
                 handler.sendMessage(message);
-                start += 10;
             }
         }.start();
     }
@@ -143,6 +181,7 @@ public class CinemaListFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
+            start = 0;
             loadCinemas();
         }
     };
