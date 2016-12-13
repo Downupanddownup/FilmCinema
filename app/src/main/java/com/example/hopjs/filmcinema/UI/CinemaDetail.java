@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.hopjs.filmcinema.Adapter.CinemaFilmAdapter;
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 import com.example.hopjs.filmcinema.TestCell;
@@ -75,6 +76,10 @@ public class CinemaDetail extends AppCompatActivity {
             }
         };
 
+        Bundle bundle = new Bundle();
+        bundle.putString("cinemaId",cinemaId);
+        sfSessions.setArguments(bundle);
+
         ivSearch.setOnClickListener(listener);
         ivReturn.setOnClickListener(listener);
 
@@ -85,8 +90,10 @@ public class CinemaDetail extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                films = Test.getFilms(cinemaId);
-                cinema = Test.getCinema(cinemaId);
+                //films = Test.getFilms(cinemaId);
+                films = Connect.getFilm_CinemaDetail(cinemaId);
+                //cinema = Test.getCinema(cinemaId);
+                cinema = Connect.getFinfor_CinemaDetail(cinemaId);
                 handler.sendMessage(new Message());
             }
         }.start();
@@ -114,7 +121,7 @@ public class CinemaDetail extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.iv_header_return:
-
+                    finish();
                     break;
                 case R.id.iv_header_search:
                     Transform.toSearch(CinemaDetail.this);
