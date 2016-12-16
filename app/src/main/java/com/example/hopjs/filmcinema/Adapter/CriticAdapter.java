@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 
 import java.util.ArrayList;
@@ -39,12 +41,20 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
     public static class Critic{
         private String id;
         private String name;
-        private int portraitId;
+        private String portraitName;
         private float scord;
         private String date;
         private String praise;
         private String content;
         private boolean isPraise;
+
+        public void setPortraitName(String portraitName) {
+            this.portraitName = portraitName;
+        }
+
+        public String getPortraitName() {
+            return portraitName;
+        }
 
         public void setPraise(boolean praise) {
             isPraise = praise;
@@ -74,9 +84,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             this.id = id;
         }
 
-        public int getPortraitId() {
-            return portraitId;
-        }
+
 
         public void setName(String name) {
             this.name = name;
@@ -86,9 +94,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             return scord;
         }
 
-        public void setPortraitId(int portraitId) {
-            this.portraitId = portraitId;
-        }
+
 
         public void setScord(float scord) {
             this.scord = scord;
@@ -224,9 +230,17 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             }else {
                 holder.ivPraise.setImageResource(R.drawable.notpraise);
             }
-            Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
+            /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(critics.get(position).getPortraitId(),context,0.01);
-            holder.ivPortrait.setImageBitmap(bitmap);
+            holder.ivPortrait.setImageBitmap(bitmap);*/
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
+            temUrl.addHeader("portraitName",critics.get(position).getPortraitName());
+            Glide.with(context)
+                    .load(temUrl.getSurl())
+                    .placeholder(R.drawable.x)
+                    .error(R.drawable.w)
+                    .into(holder.ivPortrait);
         }
     }
 

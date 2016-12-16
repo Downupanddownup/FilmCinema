@@ -72,7 +72,7 @@ public class CinemaFilmAdapter extends RecyclerView.Adapter<CinemaFilmAdapter.Vi
             holder.ivPoster.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("filmId",films.get(position-1).getId());
+            temUrl.addHeader("posterName",films.get(position-1).getPosterName());
             Glide.with(context)
                     .load(temUrl.getSurl())
                     .placeholder(R.drawable.x)

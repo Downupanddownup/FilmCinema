@@ -107,7 +107,7 @@ public class PosterFragment extends Fragment {
         ArrayList<FilmList> filmLists = new ArrayList<>();
         for(int i=0; i<4; ++i){
             FilmList filmList = new FilmList();
-            filmList.setPosterResourceId(Test.getPicture(i));
+          //  filmList.setPosterResourceId(Test.getPicture(i));
             filmList.setId(i+"");
             filmLists.add(filmList);
         }
@@ -164,7 +164,7 @@ public class PosterFragment extends Fragment {
             //imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("filmId","");
+            temUrl.addHeader("posterName",film.getPosterName());
             Glide.with(this)
                     .load(temUrl.getSurl())
                     .placeholder(R.drawable.x)
@@ -172,7 +172,7 @@ public class PosterFragment extends Fragment {
                     .into(imageView);
             BigPosterAdatper.PagerHolder pagerHolder = new BigPosterAdatper.PagerHolder();
             pagerHolder.poster = imageView;
-            pagerHolder.id = "1";
+            pagerHolder.id = film.getId();
             films.add(pagerHolder);
         }
         bigPosterAdatper = new BigPosterAdatper(getActivity(),films);

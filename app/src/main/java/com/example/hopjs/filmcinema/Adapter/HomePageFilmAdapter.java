@@ -89,7 +89,7 @@ public class HomePageFilmAdapter extends RecyclerView.Adapter<HomePageFilmAdapte
         holder.poster.setImageBitmap(bitmap);*/
         Connect.TemUrl temUrl = new Connect.TemUrl();
         temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-        temUrl.addHeader("filmId","");
+        temUrl.addHeader("posterName",mDatas.get(position).getPosterName());
         Glide.with(context)
                 .load(temUrl.getSurl())
                 .placeholder(R.drawable.x)

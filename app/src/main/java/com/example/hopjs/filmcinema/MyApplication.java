@@ -15,6 +15,7 @@ public class MyApplication extends Application {
     public UserAccount userAccount;
     public TicketInformation ticketInformation;
     public int cityId;
+    public String filmId;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -22,6 +23,7 @@ public class MyApplication extends Application {
         userAccount = new UserAccount();
         userAccount.setLogin(true);
         userAccount.setName("张泉单");
+        userAccount.setUserId("1");
         userAccount.setBphone("13757371020");
         ticketInformation = new TicketInformation();
     }

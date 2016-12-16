@@ -7,14 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hopjs.filmcinema.Adapter.WorkersAdapter;
+import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
+import com.example.hopjs.filmcinema.UI.FilmDetail;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.util.ArrayList;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 public class WorkersFragment extends Fragment {
     private final int MESSAGE_DANDA = 1;
     private final int MESSAGE_MORE = 2;
+
     private String filmId;
     private WorkersAdapter.Director director;
     private ArrayList<WorkersAdapter.Actors> actors;
@@ -45,12 +49,6 @@ public class WorkersFragment extends Fragment {
         recyclerView = (RecyclerView)view.findViewById
                 (R.id.rv_film0detail_minfor_workers);
 
-        Bundle bundle = getArguments();
-        if(bundle!=null && bundle.get("filmId")!=null){
-            filmId = bundle.get("filmId").toString();
-        }
-        loadDAandPlot();
-
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -65,9 +63,14 @@ public class WorkersFragment extends Fragment {
             }
         };
 
+      //  filmId = ((FilmDetail)getActivity()).filmId;
+        filmId = ((MyApplication)getActivity().getApplicationContext()).filmId;
+        loadDAandPlot();
         start = 0;
         return  view;
     }
+
+
 
     private WorkersAdapter.OnItemClickListener listener = new WorkersAdapter.OnItemClickListener() {
         @Override
@@ -106,6 +109,8 @@ public class WorkersFragment extends Fragment {
             public void run() {
                 Message message = new Message();
                 message.arg1 = MESSAGE_DANDA;
+                Log.e("ooooooooooooooo","WorkersFragment:loadDAandPlot,filmId:"+filmId);
+             //   while (!getFilmId);
                 //expandableTextView.setText(Test.getPlot());
                 expandableTextView.setText(Connect.getPlot(filmId));
                 //director = Test.getDirector();
@@ -123,6 +128,7 @@ public class WorkersFragment extends Fragment {
             public void run() {
                 Message message = new Message();
                 message.arg1 = MESSAGE_MORE;
+            //    while (!getFilmId);
                 //actors = Test.getActors();
                 actors = Connect.getActors_FilmDeatail(filmId,start+"");
                 start += 10;

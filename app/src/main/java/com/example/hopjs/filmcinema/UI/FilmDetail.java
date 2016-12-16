@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,7 +33,7 @@ public class FilmDetail extends AppCompatActivity {
     private ImageButton ibtCritic,ibtLike,ibtBuy;
     private FinforFilm finforFilm;
     private Handler handler;
-    private String filmId;
+    public String filmId;
     private WorkersFragment workersFragment;
     private CriticsFragment criticsFragment;
     @Override
@@ -78,10 +79,9 @@ public class FilmDetail extends AppCompatActivity {
 
         filmId = getIntent().getStringExtra("filmId");
 
-        Bundle bundle = new Bundle();
-        bundle.putString("filmId",filmId);
-        workersFragment.setArguments(bundle);
-        criticsFragment.setArguments(bundle);
+/*        workersFragment.setFilmId(filmId);
+        criticsFragment.setFilmId(filmId);*/
+
 
         loadFinforFilm();
         handler = new Handler(){
@@ -104,10 +104,10 @@ public class FilmDetail extends AppCompatActivity {
                     Transform.toSearch(FilmDetail.this);
                     break;
                 case R.id.ibt_film0detail_buy:
-                    Transform.toCinemaChoose(FilmDetail.this,"3");
+                    Transform.toCinemaChoose(FilmDetail.this,filmId);
                     break;
                 case R.id.ibt_film0detail_critic:
-                    Transform.toCritic(FilmDetail.this,"3");
+                    Transform.toCritic(FilmDetail.this,filmId);
                     break;
                 case R.id.ibt_film0detail_collect:
                     Test.showToast(FilmDetail.this,"你收藏了这部电影");
@@ -133,22 +133,31 @@ public class FilmDetail extends AppCompatActivity {
         tvType.setText(finforFilm.getType());
         tvScord.setText(finforFilm.getScord());
         Glide.with(this)
-                .load(R.drawable.a)
+                .load(R.drawable.r)
                 .into(ivBackground);
         Connect.TemUrl temUrl = new Connect.TemUrl();
         temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-        temUrl.addHeader("filmId",filmId);
+        temUrl.addHeader("posterName",finforFilm.getPosterName());
         Glide.with(this)
                 .load(temUrl.getSurl())
                 .into(ivPoster);
     }
     public static class FinforFilm{
         private String filmId;
+        private String posterName;
         private String name;
         private String type;
         private String scord;
         private String time;
         private String date;
+
+        public String getPosterName() {
+            return posterName;
+        }
+
+        public void setPosterName(String posterName) {
+            this.posterName = posterName;
+        }
 
         public String getFilmId() {
             return filmId;

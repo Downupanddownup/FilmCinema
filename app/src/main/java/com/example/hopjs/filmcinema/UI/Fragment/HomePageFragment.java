@@ -233,7 +233,7 @@ public class HomePageFragment extends Fragment {
             HomePageFilm tem = new HomePageFilm();
             tem.setId("1");
             /*tem.setPoster(bitmap);*/
-            tem.setPosterResourceId(integer);
+          //  tem.setPosterResourceId(integer);
             tem.setName("电影22");
             tem.setScord("评分11");
             tem.setDate("10月10日");

@@ -8,8 +8,7 @@ import android.graphics.Bitmap;
 
 public class FilmList {
     private String id;
-    private Bitmap poster;
-    private int posterResourceId;
+    private String posterName;
     private String name;
     private String scord;
 
@@ -19,12 +18,12 @@ public class FilmList {
     private String cinemaNum;
     private String showingTimes;
 
-    public int getPosterResourceId() {
-        return posterResourceId;
+    public String getPosterName() {
+        return posterName;
     }
 
-    public void setPosterResourceId(int posterResourceId) {
-        this.posterResourceId = posterResourceId;
+    public void setPosterName(String posterName) {
+        this.posterName = posterName;
     }
 
     public void setType(String type) {

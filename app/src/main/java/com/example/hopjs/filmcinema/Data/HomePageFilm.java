@@ -8,21 +8,20 @@ import android.graphics.Bitmap;
 
 public class HomePageFilm {
     private String id;
-    private Bitmap poster;
-    private int posterResourceId;
+
+    private String posterName;
     private String name;
     private String scord;
     private String date;
 
-    public void setPosterResourceId(int posterResourceId) {
-        this.posterResourceId = posterResourceId;
+    public void setPosterName(String posterName) {
+        this.posterName = posterName;
     }
 
-    public int getPosterResourceId() {
-        return posterResourceId;
+    public String getPosterName() {
+        return posterName;
     }
-
-    /*public Bitmap getPoster() {
+/*public Bitmap getPoster() {
         return poster;
     }*/
 

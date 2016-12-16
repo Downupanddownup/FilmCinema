@@ -52,15 +52,7 @@ public class SessionFragment extends Fragment {
 
         progressBar.setMax(100);
 
-        Bundle bundle = getArguments();
-        if(bundle != null){
-            if(bundle.get("cinemaId")!=null){
-                cinemaId = bundle.get("cinemaId").toString();
-            }
-            /*if(bundle.get("fimeId")!=null){
-                filmId = bundle.get("fimeId").toString();
-            }*/
-        }
+
 
 
         handler = new Handler(){
@@ -85,7 +77,9 @@ public class SessionFragment extends Fragment {
         this.filmId = filmId;
         loadSessions();
     }
+
     private void createTabs(){
+        llTabs.removeAllViews();
         for(int i=0;i<dates.size();++i) {
             final TextView textView = new TextView(getActivity());
             WindowManager manager = getActivity().getWindowManager();

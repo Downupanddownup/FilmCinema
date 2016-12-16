@@ -143,7 +143,7 @@ public class Connect {
     }
 
     public static class TemUrl{
-        private final String SURL = "http://112.10.182.206:8080/FilmCinemaService/servlet/Service";
+        private final String SURL = "http://1.1.1.1:8080/FilmCinemaService/servlet/Service";
         private String surl;
         public TemUrl() {
             surl = SURL;
@@ -198,6 +198,7 @@ public class Connect {
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
                 temContent.setScord(j.getAsJsonObject().get("scord").getAsString());
                 temContent.setName(j.getAsJsonObject().get("name").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
                 Content.add(temContent);
             }
         }catch (Exception e){
@@ -233,6 +234,7 @@ public class Connect {
                 temContent.setScord(j.getAsJsonObject().get("scord").getAsString());
                 temContent.setDate(j.getAsJsonObject().get("date").getAsString());
                 temContent.setName(j.getAsJsonObject().get("name").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
                 Content.add(temContent);
             }
         }catch (Exception e){
@@ -265,6 +267,7 @@ public class Connect {
             for (JsonElement j:jsonArray) {
                 FilmList temContent = new FilmList();///
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
                 Content.add(temContent);
             }
         }catch (Exception e){
@@ -298,6 +301,7 @@ public class Connect {
             for (JsonElement j:jsonArray) {
                 FilmList temContent = new FilmList();///
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
                 temContent.setName(j.getAsJsonObject().get("name").getAsString());
                 temContent.setScord(j.getAsJsonObject().get("scord").getAsString());
                 temContent.setShowingTimes(j.getAsJsonObject().get("showingTimes").getAsString());
@@ -335,6 +339,7 @@ public class Connect {
             for (JsonElement j:jsonArray) {
                 FilmList temContent = new FilmList();///
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
                 temContent.setName(j.getAsJsonObject().get("name").getAsString());
                 temContent.setScord(j.getAsJsonObject().get("scord").getAsString());
                 temContent.setDate(j.getAsJsonObject().get("date").getAsString());
@@ -544,6 +549,7 @@ public class Connect {
             for (JsonElement j:jsonArray) {
                 CollectionAdapter.Collection temContent = new CollectionAdapter.Collection();///
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
                 temContent.setType(j.getAsJsonObject().get("type").getAsString());
                 temContent.setTime(j.getAsJsonObject().get("time").getAsString());
                 temContent.setScord(j.getAsJsonObject().get("scord").getAsString());
@@ -581,6 +587,7 @@ public class Connect {
 
             Content.setFilmId(filmId);
             Content.setScord(jsonObject.getAsJsonObject().get("scord").getAsString());
+            Content.setPosterName(jsonObject.getAsJsonObject().get("posterName").getAsString());
             Content.setName(jsonObject.getAsJsonObject().get("name").getAsString());
             Content.setTime(jsonObject.getAsJsonObject().get("time").getAsString());
             Content.setType(jsonObject.getAsJsonObject().get("type").getAsString());
@@ -619,6 +626,7 @@ public class Connect {
                 WorkersAdapter.Actors temContent = new WorkersAdapter.Actors();///
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
                 temContent.setName(j.getAsJsonObject().get("name").getAsString());
+                temContent.setPortraitName(j.getAsJsonObject().get("portraitName").getAsString());
                 temContent.setRole(j.getAsJsonObject().get("role").getAsString());
                 Content.add(temContent);
             }
@@ -650,6 +658,7 @@ public class Connect {
             data = URLDecoder.decode(data, "UTF-8");
             jsonObject = jsonParser.parse(data).getAsJsonObject();
             Content.setId(jsonObject.getAsJsonObject().get("id").getAsString());
+            Content.setportraitName(jsonObject.getAsJsonObject().get("portraitName").getAsString());
             Content.setName(jsonObject.getAsJsonObject().get("name").getAsString());
 
         }catch (Exception e){
@@ -684,6 +693,7 @@ public class Connect {
             for (JsonElement j:jsonArray) {
                 CriticAdapter.Critic temContent = new CriticAdapter.Critic();///
                 temContent.setDate(j.getAsJsonObject().get("date").getAsString());
+                temContent.setPortraitName(j.getAsJsonObject().get("portraitName").getAsString());
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
                 temContent.setName(j.getAsJsonObject().get("name").getAsString());
                 temContent.setContent(j.getAsJsonObject().get("content").getAsString());
@@ -844,6 +854,7 @@ public class Connect {
                 String scord = j.getAsJsonObject().get("scord").getAsString();
                 temContent.setScord(Float.parseFloat(scord));
                 temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
                 temContent.setName(j.getAsJsonObject().get("name").getAsString());
                 Content.add(temContent);
             }
@@ -891,7 +902,7 @@ public class Connect {
         }
         return Content;
     }
-    public static SeatChoose.CinemaSeat getSeat(String cinemaId,String sessionId){
+    public static SeatChoose.CinemaSeat getSeat(String cinemaId,String filmId,String sessionId){
         //准备阶段
         JsonObject jsonObject = null;
         JsonParser jsonParser = new JsonParser();
@@ -902,6 +913,7 @@ public class Connect {
         temUrl.setConnectionType(NETWORK_SEATCHOOSE);///
         temUrl.addHeader("cinemaId",cinemaId);
         temUrl.addHeader("sessionId",sessionId);
+        temUrl.addHeader("filmId",filmId);
         ///
         try {
             //通信阶段

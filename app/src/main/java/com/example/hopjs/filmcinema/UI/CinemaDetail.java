@@ -76,9 +76,7 @@ public class CinemaDetail extends AppCompatActivity {
             }
         };
 
-        Bundle bundle = new Bundle();
-        bundle.putString("cinemaId",cinemaId);
-        sfSessions.setArguments(bundle);
+
 
         ivSearch.setOnClickListener(listener);
         ivReturn.setOnClickListener(listener);
@@ -211,10 +209,10 @@ public class CinemaDetail extends AppCompatActivity {
         private String id;
         private String name;
         private float Scord;
-        private int posterId;
+        private String posterName;
 
-        public int getPosterId() {
-            return posterId;
+        public String getPosterName() {
+            return posterName;
         }
 
         public float getScord() {
@@ -237,8 +235,8 @@ public class CinemaDetail extends AppCompatActivity {
             this.name = name;
         }
 
-        public void setPosterId(int posterId) {
-            this.posterId = posterId;
+        public void setPosterName(String posterName) {
+            this.posterName = posterName;
         }
 
         public void setScord(float scord) {

@@ -43,7 +43,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHodl
             btBuy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Transform.toSeatChoose(activity,filmId,cinemaId,sessionId);
+                    Transform.toSeatChoose(activity,cinemaId,filmId,sessionId);
                 }
             });
         }
@@ -61,6 +61,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHodl
         this.context = activity.getApplicationContext();
         this.activity = activity;
         this.sessions = sessions;
+        this.cinemaId = cinemaId;
     }
 
     public void replaceSessions(ArrayList<CinemaDetail.Session> sessions){

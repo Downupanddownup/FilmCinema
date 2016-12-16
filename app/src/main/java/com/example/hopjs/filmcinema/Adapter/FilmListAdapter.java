@@ -102,7 +102,7 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
             holder.poster.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("filmId",filmLists.get(position).getId());
+            temUrl.addHeader("posterName",filmLists.get(position).getPosterName());
             Glide.with(context)
                     .load(temUrl.getSurl())
                     .placeholder(R.drawable.x)

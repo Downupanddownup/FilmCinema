@@ -49,6 +49,7 @@ public class SeatChoose extends AppCompatActivity {
     Handler handler;
     private String cinemaId;
     private String sessionId;
+    private String filmId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class SeatChoose extends AppCompatActivity {
 
         cinemaId = getIntent().getStringExtra("cinemaId");
         sessionId = getIntent().getStringExtra("sessionId");
-
+        filmId = getIntent().getStringExtra("filmId");
         loadSeatData();
     }
 
@@ -123,7 +124,7 @@ public class SeatChoose extends AppCompatActivity {
                 List<seat> tem = new ArrayList<seat>();
                 for(int i =0;i<400;++i)tem.add(getSeat());
                 seats.setSeatList(tem);*/
-                seats = Connect.getSeat(cinemaId,sessionId);
+                seats = Connect.getSeat(cinemaId,filmId,sessionId);
                 setListViewOnTouchAndScrollListener(lvRow,gvSeat,seats.getCoulmns());
                 handler.sendMessage(msg);
             }

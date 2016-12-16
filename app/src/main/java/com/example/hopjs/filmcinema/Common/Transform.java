@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.example.hopjs.filmcinema.Data.Cinema;
 import com.example.hopjs.filmcinema.MainActivity;
+import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.UI.About;
 import com.example.hopjs.filmcinema.UI.CinemaChoose;
 import com.example.hopjs.filmcinema.UI.CinemaDetail;
@@ -29,6 +30,7 @@ import com.example.hopjs.filmcinema.UI.TicketRecord;
 public class Transform {
     public static void toFilmDetail(Activity activity,String filmId){
         Intent intent = new Intent(activity, FilmDetail.class);
+        ((MyApplication)activity.getApplicationContext()).filmId = filmId;
         intent.putExtra("filmId",filmId);
         activity.startActivity(intent);
     }

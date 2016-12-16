@@ -7,14 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.hopjs.filmcinema.Adapter.CriticAdapter;
+import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
+import com.example.hopjs.filmcinema.UI.FilmDetail;
 
 import java.util.ArrayList;
 
@@ -26,6 +29,7 @@ public class CriticsFragment extends Fragment {
     private final int MESSAGE_FIRST = 0;
     private final int MESSAGE_MORE = 1;
     private String filmId;
+
     private RecyclerView rvCritics;
     private LinearLayoutManager linearLayoutManager;
     private CriticAdapter criticAdapter;
@@ -38,11 +42,8 @@ public class CriticsFragment extends Fragment {
         View view = inflater.inflate(R.layout.film0detail_critic,container,false);
         rvCritics = (RecyclerView)view.findViewById(R.id.rv_film0detail_critic_c);
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        loadCritics();
-        Bundle bundle = getArguments();
-        if(bundle!=null && bundle.get("filmId")!=null){
-            filmId = bundle.get("filmId").toString();
-        }
+
+
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -56,18 +57,22 @@ public class CriticsFragment extends Fragment {
                 }
             }
         };
-
+        filmId = ((MyApplication)getActivity().getApplicationContext()).filmId;
+        loadCritics();
         start = 0;
         return view;
     }
+
 
     private void loadCritics(){
         new Thread(){
             @Override
             public void run() {
                 //critics = Test.getCritics(5);
+            //    while (!getFilmId);
+                Log.e("ooooooooooooooo","CriticsFragment:loadCritics,filmId"+filmId);
                 critics = Connect.getCritic_FilmDeatil(filmId,start+"");
-                start += 10;
+                start += 5;
                 Message message = new Message();
                 message.arg1 = MESSAGE_FIRST;
                 handler.sendMessage(message);
@@ -87,8 +92,9 @@ public class CriticsFragment extends Fragment {
                 @Override
                 public void run() {
                    // critics = Test.getCritics(10);
+              //      while (!getFilmId);
                     critics = Connect.getCritic_FilmDeatil(filmId,start+"");
-                    start += 10;
+                    start += 5;
                     Message message = new Message();
                     message.arg1 = MESSAGE_MORE;
                     handler.sendMessage(message);

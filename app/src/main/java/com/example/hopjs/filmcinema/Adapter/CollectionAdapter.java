@@ -41,7 +41,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     public static class Collection{
         private String name;
         private String id;
-        private int posterId;
+        private String posterName;
         private String scord;
         private String type;
         private String director;
@@ -63,16 +63,16 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             this.name = name;
         }
 
-        public int getPosterId() {
-            return posterId;
+        public String getPosterName() {
+            return posterName;
         }
 
         public String getDirector() {
             return director;
         }
 
-        public void setPosterId(int posterId) {
-            this.posterId = posterId;
+        public void setPosterName(String posterName) {
+            this.posterName = posterName;
         }
 
         public String getScord() {
@@ -179,7 +179,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             holder.ivPoster.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("filmId",collections.get(position).getId());
+            temUrl.addHeader("posterName",collections.get(position).getPosterName());
             Glide.with(context)
                     .load(temUrl.getSurl())
                     .placeholder(R.drawable.x)

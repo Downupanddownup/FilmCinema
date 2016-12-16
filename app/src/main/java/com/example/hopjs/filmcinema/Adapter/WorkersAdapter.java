@@ -24,10 +24,10 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
     public static class Director{
         private String id;
         private String name;
-        private int portraitId;
+        private String portraitName;
 
-        public void setPortraitId(int portraitId) {
-            this.portraitId = portraitId;
+        public void setportraitName(String portraitName) {
+            this.portraitName = portraitName;
         }
 
         public void setName(String name) {
@@ -38,8 +38,8 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
             this.id = id;
         }
 
-        public int getPortraitId() {
-            return portraitId;
+        public String getportraitName() {
+            return portraitName;
         }
 
         public String getId() {
@@ -53,15 +53,19 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
     public static class Actors{
         private String id;
         private String name;
-        private int portraitId;
+        private String portraitName;
         private String role;
 
         public String getId() {
             return id;
         }
 
-        public int getPortraitId() {
-            return portraitId;
+        public String getPortraitName() {
+            return portraitName;
+        }
+
+        public void setPortraitName(String portraitName) {
+            this.portraitName = portraitName;
         }
 
         public String getName() {
@@ -80,9 +84,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
             this.name = name;
         }
 
-        public void setPortraitId(int portraitId) {
-            this.portraitId = portraitId;
-        }
+
 
         public void setRole(String role) {
             this.role = role;
@@ -155,7 +157,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
             holder.ivPortrait.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
-            temUrl.addHeader("filmId",director.getPortraitId()+"");
+            temUrl.addHeader("portraitName",director.getportraitName());
             Glide.with(context)
                     .load(temUrl.getSurl())
                     .placeholder(R.drawable.x)
@@ -170,7 +172,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
             holder.ivPortrait.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
-            temUrl.addHeader("filmId",actors.get(position-1).getPortraitId()+"");
+            temUrl.addHeader("portraitName",actors.get(position-1).getPortraitName());
             Glide.with(context)
                     .load(temUrl.getSurl())
                     .placeholder(R.drawable.x)
