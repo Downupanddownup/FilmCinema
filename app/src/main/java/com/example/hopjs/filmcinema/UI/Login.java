@@ -36,7 +36,7 @@ public class Login {
     public Login(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
-        dialogBuilder = NiftyDialogBuilder.getInstance(context);
+
         vLogin = LayoutInflater.from(context).inflate(R.layout.login,null,false);
         etName = (EditText)vLogin.findViewById(R.id.et_login_name);
         etPwd = (EditText)vLogin.findViewById(R.id.et_login_pwd);
@@ -66,27 +66,7 @@ public class Login {
             }
         });
         btLogin.setOnClickListener(listener);
-        dialogBuilder
-                .withTitle("登 录")
-                .withMessage("请输入用户名/手机号和密码")
-                .withDuration(500)
-                .withEffect(Effectstype.Fliph)
-                .isCancelableOnTouchOutside(false)
-                .setCustomView(vLogin,context)
-                .withButton1Text("返回")
-                .withButton2Text("注册")
-                .setButton1Click(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setReturnEvent();
-                    }
-                })
-                .setButton2Click(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        setRegisterEvent();
-                    }
-                });
+
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
@@ -115,6 +95,36 @@ public class Login {
         Transform.toRegister(activity);
     }
     public void show(){
-        dialogBuilder.show();
+        clear();
+        dialogBuilder = NiftyDialogBuilder.getInstance(context);
+        dialogBuilder
+                .withTitle("登 录")
+                .withMessage("请输入用户名/手机号和密码")
+                .withDuration(500)
+                .withEffect(Effectstype.Fliph)
+                .isCancelableOnTouchOutside(false)
+                .setCustomView(vLogin,context)
+                .withButton1Text("返回")
+                .withButton2Text("注册")
+                .setButton1Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setReturnEvent();
+                    }
+                })
+                .setButton2Click(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setRegisterEvent();
+                    }
+                })
+                .show();
+    }
+    public void clear(){
+        tvTips.setVisibility(View.INVISIBLE);
+        ivTips.setVisibility(View.INVISIBLE);
+        cbRemeber.setChecked(false);
+        etName.setText("");
+        etPwd.setText("");
     }
 }

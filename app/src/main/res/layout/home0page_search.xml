@@ -20,13 +20,13 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"
+            android:scaleType="fitCenter"
             android:id="@+id/iv_home0page_search_switch"
             android:src="@drawable/search"/>
         <EditText
             android:layout_width="280dp"
             android:layout_height="match_parent"
-
+            android:focusable="false"
             android:id="@+id/et_home0page_search_content"
             />
     </LinearLayout>

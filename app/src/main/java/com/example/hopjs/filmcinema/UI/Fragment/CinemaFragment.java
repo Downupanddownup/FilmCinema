@@ -64,7 +64,7 @@ public class CinemaFragment extends Fragment {
         CinemaListFragment allCity = new CinemaListFragment();
         CinemaListFragment nearby = new CinemaListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("type", CinemaListFragment.TYPE_NEARBY+"");
+        bundle.putInt("type", CinemaListFragment.TYPE_NEARBY);
         nearby.setArguments(bundle);
         fragmentPagerAdapter = new CinemasPagerAdapter
                 (getFragmentManager(),allCity,nearby);

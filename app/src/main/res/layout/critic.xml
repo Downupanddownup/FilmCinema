@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_critic_return"
+            android:layout_marginLeft="20dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/return0arrow"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/tv_critic_title"
+            android:layout_centerHorizontal="true"
+            android:text="标 题"
+            android:textSize="25dp"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:id="@+id/tv_critic_send"
+            android:text="发送"
+            android:textSize="20dp"
+            android:gravity="center_vertical" />
 
+    </RelativeLayout>
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rb_critic_scord"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:progressTint="@color/colorAccent"
+        android:progressBackgroundTint="@color/colorAccent"
+        android:secondaryProgressTint="@color/colorAccent"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="0.1" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/et_critic_content"
+        android:text="请输入评论"
+        android:textColor="@color/colorGrey"
+        android:gravity="start"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edit_bg"/>
 </LinearLayout>
+

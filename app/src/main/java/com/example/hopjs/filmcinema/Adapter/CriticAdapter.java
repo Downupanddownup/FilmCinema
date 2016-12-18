@@ -40,6 +40,7 @@ import java.util.ArrayList;
 public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder> {
     public static class Critic{
         private String id;
+        private String filmId;
         private String name;
         private String portraitName;
         private float scord;
@@ -47,6 +48,14 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
         private String praise;
         private String content;
         private boolean isPraise;
+
+        public String getFilmId() {
+            return filmId;
+        }
+
+        public void setFilmId(String filmId) {
+            this.filmId = filmId;
+        }
 
         public void setPortraitName(String portraitName) {
             this.portraitName = portraitName;

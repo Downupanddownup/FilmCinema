@@ -31,8 +31,10 @@ import java.util.ArrayList;
 public class CinemaListFragment extends Fragment {
     public static final int TYPE_ALLCITY = 1;
     public static final int TYPE_NEARBY = 2;
+    public static final int TYPE_SEARCH = 3;
     private final int REFRESH_FINISHED = 1;
     private final int LOAD_MORE_FINISHED = 2;
+
     private SwipeRefreshLayout srlRefresh;
     private RecyclerView rvCinemas;
     private ArrayList<Cinema> cinemas;
@@ -44,6 +46,7 @@ public class CinemaListFragment extends Fragment {
     private boolean noSpecial;
     private String filmId;
     private String cityId;
+    private String cinemaNameLike;
 
     @Nullable
     @Override
@@ -83,7 +86,11 @@ public class CinemaListFragment extends Fragment {
         type = TYPE_ALLCITY;
         Bundle bundle = getArguments();
         if(bundle != null && bundle.get("type")!= null){
-            type = Integer.parseInt(bundle.get("type").toString());
+            type = bundle.getInt("type");
+            Log.i("000000",bundle.getInt("type")+"");
+            if(type ==TYPE_SEARCH){
+                srlRefresh.setRefreshing(false);
+            }
         }
 
         noSpecial = true;
@@ -93,8 +100,26 @@ public class CinemaListFragment extends Fragment {
         }
         start = 0;
         cityId = ((MyApplication)getActivity().getApplicationContext()).cityId+"";
-        loadCinemas();
+        if(type != TYPE_SEARCH)
+            loadCinemas();
         return view;
+    }
+
+    public void setCinemaNameLike(String cinemaNameLike){
+        start=0;
+        this.cinemaNameLike = cinemaNameLike;
+        new Thread(){
+            @Override
+            public void run() {
+                //cinemas = Test.getCinemas(start,10);
+                cinemas = Connect.getNearby_CinemaList_NoSpecial(cityId,"jing", "wei",start+"" );
+                Message message = new Message();
+                message.arg1 = REFRESH_FINISHED;
+                handler.sendMessage(message);
+                start += 10;
+            }
+        }.start();
+
     }
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
@@ -127,8 +152,10 @@ public class CinemaListFragment extends Fragment {
                 if(noSpecial) {
                     if (type == TYPE_ALLCITY) {
                         cinemas = Connect.getAllCity_CinemaList_NoSpecial(cityId,start+"");
-                    } else {
+                    } else if(type == TYPE_NEARBY){
                         cinemas = Connect.getNearby_CinemaList_NoSpecial(cityId,"jing", "wei",start+"" );
+                    }else {
+                        cinemas = Connect.getAllCity_CinemaList_NoSpecial(cityId,start+"");
                     }
                 }else {
                     if (type == TYPE_ALLCITY) {
@@ -153,8 +180,10 @@ public class CinemaListFragment extends Fragment {
                 if(noSpecial) {
                     if (type == TYPE_ALLCITY) {
                         cinemas = Connect.getAllCity_CinemaList_NoSpecial(cityId,start+"");
-                    } else {
+                    } else if(type == TYPE_NEARBY){
                         cinemas = Connect.getNearby_CinemaList_NoSpecial(cityId,"jing", "wei",start+"" );
+                    }else {
+
                     }
                 }else {
                     if (type == TYPE_ALLCITY) {
@@ -181,8 +210,12 @@ public class CinemaListFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            start = 0;
-            loadCinemas();
+            if (type != TYPE_SEARCH) {
+                start = 0;
+                loadCinemas();
+            } else {
+                srlRefresh.setRefreshing(false);
+            }
         }
     };
 

@@ -1,16 +1,24 @@
 package com.example.hopjs.filmcinema.Network;
 
+import android.graphics.Bitmap;
+
 import com.example.hopjs.filmcinema.Adapter.CollectionAdapter;
 import com.example.hopjs.filmcinema.Adapter.CriticAdapter;
+import com.example.hopjs.filmcinema.Adapter.FilmListAdapter;
 import com.example.hopjs.filmcinema.Adapter.MyCriticAdapter;
+import com.example.hopjs.filmcinema.Adapter.RvCityAdapter;
 import com.example.hopjs.filmcinema.Adapter.TicketRecordAdapter;
 import com.example.hopjs.filmcinema.Adapter.WorkersAdapter;
 import com.example.hopjs.filmcinema.Data.Cinema;
 import com.example.hopjs.filmcinema.Data.FilmList;
 import com.example.hopjs.filmcinema.Data.HomePageFilm;
+import com.example.hopjs.filmcinema.Data.Result;
+import com.example.hopjs.filmcinema.Data.UserAccount;
 import com.example.hopjs.filmcinema.UI.CinemaDetail;
 import com.example.hopjs.filmcinema.UI.FilmDetail;
+import com.example.hopjs.filmcinema.UI.Fragment.FilmListFragment;
 import com.example.hopjs.filmcinema.UI.SeatChoose;
+import com.example.hopjs.filmcinema.UI.TicketRecord;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,6 +30,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -131,6 +140,18 @@ public class Connect {
     public static final int NETWORK_FILM_PICTURE = 21;
     public static final int NETWORK_FILMDETAIL_PLOT = 22;
     public static final int NETWORK_PORTRAIT = 23;
+    public static final int NETWORK_SEARCH_FILM = 33;
+    public static final int NETWORK_POST_LOGIN = 24;
+    public static final int NETWORK_POST_REGISTER = 25;
+    public static final int NETWORK_POST_PCENTER_EDIT = 26;
+    public static final int NETWORK_POST_PCENTER_PSD = 27;
+    public static final int NETWORK_POST_PCENTER_PHONE = 28;
+    public static final int NETWORK_POST_PRAISE = 29;
+    public static final int NETWORK_POST_COLLECT = 30;
+    public static final int NETWORK_POST_CRITIC = 31;
+    public static final int NETWORK_POST_BUYTICKET = 32;
+    public static final int NETWORK_CITY = 34;
+    public static final int NETWORK_SEARCH_CINEMA = 35;
 
     private static HttpURLConnection getHttpURLConnection(URL url)throws Exception{
         HttpURLConnection httpURLConnection = null;
@@ -143,7 +164,7 @@ public class Connect {
     }
 
     public static class TemUrl{
-        private final String SURL = "http://1.1.1.1:8080/FilmCinemaService/servlet/Service";
+        private final String SURL = "http://192.168.253.1:8080/FilmCinemaService/servlet/Service";
         private String surl;
         public TemUrl() {
             surl = SURL;
@@ -171,6 +192,407 @@ public class Connect {
         return   baos.toString();
     }
 
+
+    public static Result postBuyTicket(String sessionId,String userId,
+             String cinemaId,String buyTime,ArrayList<Integer> tickets){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userId",userId);
+        jsonObject.addProperty("sessionId",sessionId);
+        jsonObject.addProperty("buyTime",buyTime);
+        jsonObject.addProperty("cinemaId",cinemaId);
+        JsonArray jsonArray = new JsonArray();
+        for(int i:tickets){
+            jsonArray.add(i);
+        }
+        jsonObject.add("tickets",jsonArray);
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_BUYTICKET);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            result.setCode(jsonObject.get("result").getAsInt());
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+
+    public static Result postCritic(CriticAdapter.Critic critic){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userId",critic.getId());
+        jsonObject.addProperty("filmId",critic.getFilmId());
+        jsonObject.addProperty("time",critic.getDate());
+        jsonObject.addProperty("content",critic.getContent());
+        jsonObject.addProperty("scord",critic.getScord());
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_CRITIC);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            result.setCode(jsonObject.get("result").getAsInt());
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+
+    public static Result postCollect(String userId,String filmId){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userId",userId);
+        jsonObject.addProperty("filmId",filmId);
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_COLLECT);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+
+    public static Result postPraise(String userId,String criticId){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userId",userId);
+        jsonObject.addProperty("criticId",criticId);
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_PRAISE);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+
+
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+
+    public static Result postPhone(String userId,String phone){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userId",userId);
+        jsonObject.addProperty("phone",phone);
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_PCENTER_PHONE);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            result.setCode(jsonObject.get("result").getAsInt());
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+
+    public static void postPsd(String userId,String pwd){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userId",userId);
+        jsonObject.addProperty("password",pwd);
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_PCENTER_PSD);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.getResponseCode();
+        }catch (Exception e){
+
+        }
+    }
+///
+    public static Result postEdit(String userId,String userName, String sex, Bitmap portrait){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userId",userId);
+        jsonObject.addProperty("userName",userName);
+        jsonObject.addProperty("sex",sex);
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_PCENTER_EDIT);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            result.setCode(jsonObject.get("result").getAsInt());
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+    public static Result postLogin(String userName,String pwd){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userName",userName);
+        jsonObject.addProperty("password",pwd);
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_LOGIN);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            result.setCode(jsonObject.get("result").getAsInt());
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+    public static Result postRegister(UserAccount userAccount){
+        //准备阶段
+        Result result = new Result();
+        JsonObject jsonObject = new JsonObject();
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+
+        jsonObject.addProperty("userName",userAccount.getName());
+        jsonObject.addProperty("password",userAccount.getPwd());
+        jsonObject.addProperty("phone",userAccount.getBphone());
+        jsonObject.addProperty("sex",userAccount.getSex());
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_POST_REGISTER);///
+        ///
+        try {
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            httpURLConnection.setRequestMethod("POST");
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            result.setCode(jsonObject.get("result").getAsInt());
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+
+    //////////
+    public static ArrayList<FilmList> getSearchFilm(String filmNameLike,String start){
+        //准备阶段
+        JsonObject jsonObject = null;
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+        ArrayList<FilmList> Content = new ArrayList<>();///
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_SEARCH_FILM);///
+        temUrl.addHeader("start",start);
+        temUrl.addHeader("filmNameLike",filmNameLike);
+        ///
+        try {
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            JsonArray jsonArray = jsonObject.get("List").getAsJsonArray();///
+            for (JsonElement j:jsonArray) {
+                FilmList temContent = new FilmList();///
+                temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setPosterName(j.getAsJsonObject().get("posterName").getAsString());
+                temContent.setName(j.getAsJsonObject().get("name").getAsString());
+                temContent.setScord(j.getAsJsonObject().get("scord").getAsString());
+                temContent.setDate(j.getAsJsonObject().get("date").getAsString());
+                temContent.setType(j.getAsJsonObject().get("type").getAsString());
+                Content.add(temContent);
+            }
+        }catch (Exception e){
+
+        }
+        return Content;
+    }
+    public static ArrayList<Cinema> getSearchCinema(String cinemaNameLike,String cityId,String start){
+        //准备阶段
+        JsonObject jsonObject = null;
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+        ArrayList<Cinema> Content = new ArrayList<>();///
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_SEARCH_CINEMA);///
+        temUrl.addHeader("cityId",cityId);
+        temUrl.addHeader("start",start);
+        temUrl.addHeader("cinemaNameLike",cinemaNameLike);
+        ///
+        try {
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            JsonArray jsonArray = jsonObject.get("List").getAsJsonArray();///
+            for (JsonElement j:jsonArray) {
+                Cinema temContent = new Cinema();///
+                temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setName(j.getAsJsonObject().get("name").getAsString());
+                temContent.setAddress(j.getAsJsonObject().get("address").getAsString());
+                temContent.setDistance(j.getAsJsonObject().get("distance").getAsString());
+                temContent.setlPrice(j.getAsJsonObject().get("lprice").getAsString());
+                Content.add(temContent);
+            }
+        }catch (Exception e){
+
+        }
+        return Content;
+    }
+    public static ArrayList<RvCityAdapter.City> getCity(){
+        //准备阶段
+        JsonObject jsonObject = null;
+        JsonParser jsonParser = new JsonParser();
+        InputStream inputStream = null;
+        ArrayList<RvCityAdapter.City> Content = new ArrayList<>();///
+
+        TemUrl temUrl = new TemUrl();
+        temUrl.setConnectionType(NETWORK_CITY);///
+        ///
+        try {
+            //通信阶段
+            HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
+            //解析阶段
+            String data = inputStream2String(inputStream);
+            data = URLDecoder.decode(data, "UTF-8");
+            jsonObject = jsonParser.parse(data).getAsJsonObject();
+            JsonArray jsonArray = jsonObject.get("List").getAsJsonArray();///
+            for (JsonElement j:jsonArray) {
+                RvCityAdapter.City temContent = new RvCityAdapter.City();///
+                temContent.setId(j.getAsJsonObject().get("id").getAsString());
+                temContent.setName(j.getAsJsonObject().get("name").getAsString());
+                temContent.setLettle(j.getAsJsonObject().get("lettle").getAsString());
+                Content.add(temContent);
+            }
+        }catch (Exception e){
+
+        }
+        return Content;
+    }
     public static ArrayList<HomePageFilm> getNowShowingData_HomepageFilm(){
         //准备阶段
         JsonObject jsonObject = null;

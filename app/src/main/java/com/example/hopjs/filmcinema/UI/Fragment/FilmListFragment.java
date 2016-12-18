@@ -35,6 +35,7 @@ import java.util.ArrayList;
 public class FilmListFragment extends Fragment {
     private final int FIRST_LOAD = 1;
     private final int LOAD_MORE = 2;
+    private final int SEARCH_LOAD = 3;
 
     private SwipeRefreshLayout srlRefresh;
     private RecyclerView rvList;
@@ -44,6 +45,7 @@ public class FilmListFragment extends Fragment {
     private int lastVisibleItem;
     private LinearLayoutManager linearLayoutManager;
     private int type = FilmListAdapter.TYPE_NOWSHOWING;
+    private String filmNameLike;
     private int start;
 
     @Nullable
@@ -82,6 +84,9 @@ public class FilmListFragment extends Fragment {
                     case LOAD_MORE:
                         setMore();
                         break;
+                    case SEARCH_LOAD:
+                        setSearchFilmListDatas();
+                        break;
                 }
                 srlRefresh.setRefreshing(false);
             }
@@ -89,13 +94,43 @@ public class FilmListFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if(bundle != null) {
-            type = Integer.parseInt((String) bundle.get("type"));
+            type = bundle.getInt("type");
         }
 
-        loadFilmListDatas();
+        if(type != FilmListAdapter.TYPE_SEARCH)
+        {
+            loadFilmListDatas();
+        }else {
+            srlRefresh.setRefreshing(false);
+        }
         
         return view;
     }
+
+    public void setFilmNameLike(String filmNameLike) {
+        start=0;
+        this.filmNameLike = filmNameLike;
+        new Thread(){
+            @Override
+            public void run() {
+                //filmLists = Test.getFilmList();
+                    filmLists = Connect.getNowShowingData_FilmList(start+"");
+                start += 10;
+                Message message = new Message();
+                message.arg1 = SEARCH_LOAD;
+                handler.sendMessage(message);
+            }
+        }.start();
+    }
+
+    private void setSearchFilmListDatas(){
+        filmListAdapter = new FilmListAdapter(getActivity(),filmLists,listener,
+                FilmListAdapter.TYPE_UPCOMING);
+        rvList.setLayoutManager(linearLayoutManager);
+        rvList.setAdapter(filmListAdapter);
+        rvList.setItemAnimator(new DefaultItemAnimator());
+    }
+
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -117,8 +152,12 @@ public class FilmListFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            start = 0;
-            loadFilmListDatas();
+            if (type != FilmListAdapter.TYPE_SEARCH) {
+                start = 0;
+                loadFilmListDatas();
+            }else {
+                srlRefresh.setRefreshing(false);
+            }
         }
     };
 
@@ -126,10 +165,12 @@ public class FilmListFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                if(type == FilmFragment.NOWSHOWING) {
+                if(type == FilmListAdapter.TYPE_NOWSHOWING) {
                     filmLists = Connect.getNowShowingData_FilmList(start+"");
-                }else {
+                }else if(type == FilmListAdapter.TYPE_UPCOMING){
                     filmLists = Connect.getUpcomingData_FilmList(start+"");
+                }else {
+                    filmLists = Connect.getNowShowingData_FilmList(start+"");
                 }
                 start += 10;
                 Message message = new Message();
@@ -150,10 +191,12 @@ public class FilmListFragment extends Fragment {
             @Override
             public void run() {
                 //filmLists = Test.getFilmList();
-                if(type == FilmFragment.NOWSHOWING) {
+                if(type == FilmListAdapter.TYPE_NOWSHOWING) {
                     filmLists = Connect.getNowShowingData_FilmList(start+"");
-                }else {
+                }else if(type == FilmListAdapter.TYPE_UPCOMING){
                     filmLists = Connect.getUpcomingData_FilmList(start+"");
+                }else {
+
                 }
                 start += 10;
                 Message message = new Message();

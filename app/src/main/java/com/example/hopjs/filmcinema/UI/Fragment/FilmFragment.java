@@ -60,7 +60,7 @@ public class FilmFragment extends Fragment {
         FilmListFragment nowShowing = new FilmListFragment();
         FilmListFragment upcoming = new FilmListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("type", FilmListAdapter.TYPE_UPCOMING+"");
+        bundle.putInt("type", FilmListAdapter.TYPE_UPCOMING);
         upcoming.setArguments(bundle);
 
         fragmentPagerAdapter = new FilmListPagerAdapter

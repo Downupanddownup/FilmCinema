@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
  */
 
 public class UserAccount {
-    private int portraitId;
+    private String portraitName;
     private String name;
     private String userId;
     private String sex;
@@ -29,12 +29,12 @@ public class UserAccount {
         this.userId = userId;
     }
 
-    public int getPortraitId() {
-        return portraitId;
+    public String getPortraitName() {
+        return portraitName;
     }
 
-    public void setPortraitId(int portraitId) {
-        this.portraitId = portraitId;
+    public void setPortraitName(String portraitName) {
+        this.portraitName = portraitName;
     }
 
     public boolean isSetportrait() {

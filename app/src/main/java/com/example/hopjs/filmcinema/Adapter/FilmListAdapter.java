@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHolder>{
     public static final int TYPE_NOWSHOWING = 1;
     public static final int TYPE_UPCOMING = 2;
+    public static final int TYPE_SEARCH = 3;
     public final int TYPE_FOOTER = 3;
     private int type;
     private ArrayList<FilmList> filmLists;

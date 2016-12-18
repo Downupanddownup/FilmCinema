@@ -60,9 +60,9 @@ public class SidebarFragment extends Fragment {
         userAccount = ((MyApplication)getActivity().getApplicationContext()).userAccount;
         if(userAccount.isLogin()){
             if(userAccount.isSetportrait()){
-                bitmap = ((MyApplication)getActivity().getApplicationContext()).bitmapCache.
+                /*bitmap = ((MyApplication)getActivity().getApplicationContext()).bitmapCache.
                         getBitmap(userAccount.getPortraitId(),getActivity().getApplicationContext(),0.1);
-                ivPortrait.setImageBitmap(bitmap);
+                ivPortrait.setImageBitmap(bitmap);*/
             }else {
                 bitmap = ((MyApplication)getActivity().getApplicationContext()).bitmapCache.
                         getBitmap(R.drawable.defaultportrait,getActivity().getApplicationContext(),0.1);

@@ -66,7 +66,7 @@ public class CinemaChoose extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("filmId",filmId);
         allCity.setArguments(bundle);
-        bundle.putString("type", CinemaListFragment.TYPE_NEARBY+"");
+        bundle.putInt("type", CinemaListFragment.TYPE_NEARBY);
         nearby.setArguments(bundle);
         fragmentPagerAdapter = new CinemasPagerAdapter
                 (getSupportFragmentManager(),allCity,nearby);

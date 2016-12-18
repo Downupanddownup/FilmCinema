@@ -7,4 +7,7 @@
     <color name="colorGreen">#23fa02</color>
     <color name="colorYellow">#faf602</color>
     <color name="dialogOrange">#ffe74c3c</color>
+    <color name="colorDark">#191818</color>
+    <color name="colorWhite">#f8f8fa</color>
+    <color name="colorGrey">#b8b8c8</color>
 </resources>
