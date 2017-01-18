@@ -7,15 +7,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 
@@ -35,6 +40,9 @@ public class CinemaFragment extends Fragment {
     private TextView tvTabOne;
     private TextView tvTabTwo;
     private FragmentPagerAdapter fragmentPagerAdapter;
+    private RelativeLayout relativeLayout;
+    private View vBackground,vFooter;
+
 
 
     private boolean first = true;
@@ -52,6 +60,9 @@ public class CinemaFragment extends Fragment {
         ivCiyt = (ImageView)view.findViewById(R.id.iv_cinema_header_choose);
         ivSearch = (ImageView)view.findViewById(R.id.iv_cinema_header_search);
         tvCity = (TextView)view.findViewById(R.id.tv_cinema_header_city);
+        relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_cinema_header_body);
+        vBackground = (View)view.findViewById(R.id.v_film_guid_center);
+        vFooter = (View)view.findViewById(R.id.v_film_guid_footer);
 
         tvTabOne.setText(" 全城 ");
         tvTabTwo.setText(" 附近 ");
@@ -59,8 +70,15 @@ public class CinemaFragment extends Fragment {
         ivCiyt.setOnClickListener(listener);
         ivSearch.setOnClickListener(searchListener);
 
-        tvTabOne.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+/*        relativeLayout.setBackgroundColor(getResources().getColor(R.color.colorGreen));
 
+        ivBar.setBackgroundColor(getResources().getColor(R.color.colorGreen));
+        vBackground.setBackgroundColor(getResources().getColor(R.color.colorGreen));
+        vFooter.setBackgroundColor(getResources().getColor(R.color.colorGreen));*/
+
+
+        tvCity.setText(((MyApplication)getActivity().getApplicationContext()).city.getName());
+        tvTabOne.setBackgroundColor(getResources().getColor(R.color.ButtomGuidBar));
         CinemaListFragment allCity = new CinemaListFragment();
         CinemaListFragment nearby = new CinemaListFragment();
         Bundle bundle = new Bundle();
@@ -113,7 +131,7 @@ public class CinemaFragment extends Fragment {
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Test.showToast(getActivity().getApplicationContext(),"你点击了城市按钮");
+            Transform.toCityChoose(getActivity());
         }
     };
 

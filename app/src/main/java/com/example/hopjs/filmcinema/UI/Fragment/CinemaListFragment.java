@@ -43,7 +43,7 @@ public class CinemaListFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private int start,lastVisibleItem;
     private int type;
-    private boolean noSpecial;
+    private boolean noSpecial,isAll;
     private String filmId;
     private String cityId;
     private String cinemaNameLike;
@@ -94,6 +94,7 @@ public class CinemaListFragment extends Fragment {
         }
 
         noSpecial = true;
+        isAll=false;
         if(bundle != null && bundle.get("filmId")!= null){
             noSpecial = false;
             filmId = bundle.get("filmId").toString();
@@ -105,18 +106,19 @@ public class CinemaListFragment extends Fragment {
         return view;
     }
 
-    public void setCinemaNameLike(String cinemaNameLike){
+    public void setCinemaNameLike(final String cinemaNameLike){
         start=0;
         this.cinemaNameLike = cinemaNameLike;
         new Thread(){
             @Override
             public void run() {
                 //cinemas = Test.getCinemas(start,10);
-                cinemas = Connect.getNearby_CinemaList_NoSpecial(cityId,"jing", "wei",start+"" );
+                cinemas = Connect.getSearchCinema(cinemaNameLike,cityId,start+"" );
                 Message message = new Message();
                 message.arg1 = REFRESH_FINISHED;
                 handler.sendMessage(message);
-                start += 10;
+                if(cinemas.size()<10)isAll=true;
+                start += cinemas.size();
             }
         }.start();
 
@@ -140,6 +142,7 @@ public class CinemaListFragment extends Fragment {
     };
 
     private void setMore(){
+        cinemasAdapter.setIsAll(isAll);
         for(Cinema cinema:cinemas){
             cinemasAdapter.add(cinema);
         }
@@ -149,6 +152,7 @@ public class CinemaListFragment extends Fragment {
             @Override
             public void run() {
                 //cinemas = Test.getCinemas(start,10);
+                if(isAll)return;
                 if(noSpecial) {
                     if (type == TYPE_ALLCITY) {
                         cinemas = Connect.getAllCity_CinemaList_NoSpecial(cityId,start+"");
@@ -167,7 +171,8 @@ public class CinemaListFragment extends Fragment {
                 Message message = new Message();
                 message.arg1 = LOAD_MORE_FINISHED;
                 handler.sendMessage(message);
-                start += 10;
+                if(cinemas.size()<10)isAll=true;
+                start += cinemas.size();
             }
         }.start();
     }
@@ -178,6 +183,7 @@ public class CinemaListFragment extends Fragment {
             public void run() {
                // cinemas = Test.getCinemas(start,10);
                 if(noSpecial) {
+                   // cinemas = Test.getCinemas(1,1);
                     if (type == TYPE_ALLCITY) {
                         cinemas = Connect.getAllCity_CinemaList_NoSpecial(cityId,start+"");
                     } else if(type == TYPE_NEARBY){
@@ -193,7 +199,8 @@ public class CinemaListFragment extends Fragment {
                     }
                 }
 
-                start += 10;
+                if(cinemas.size()<10)isAll=true;
+                start += cinemas.size();
                 Message message = new Message();
                 message.arg1 = REFRESH_FINISHED;
                 handler.sendMessage(message);
@@ -204,6 +211,7 @@ public class CinemaListFragment extends Fragment {
     private void setCinemas(){
         rvCinemas.setLayoutManager(linearLayoutManager);
         cinemasAdapter = new CinemasAdapter(getActivity(),cinemas,listener);
+        cinemasAdapter.setIsAll(isAll);
         rvCinemas.setAdapter(cinemasAdapter);
     }
 
@@ -212,6 +220,7 @@ public class CinemaListFragment extends Fragment {
         public void onRefresh() {
             if (type != TYPE_SEARCH) {
                 start = 0;
+                isAll=false;
                 loadCinemas();
             } else {
                 srlRefresh.setRefreshing(false);

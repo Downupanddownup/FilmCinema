@@ -1,21 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <include layout="@layout/cinema_header"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp"/>
-    <include layout="@layout/film_guid"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp"/>
-    <android.support.v4.view.ViewPager
+    android:layout_height="match_parent">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/vp_cinema0choose_cinemas">
+        android:orientation="vertical">
 
-    </android.support.v4.view.ViewPager>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/iv_cinema0choose_return"
+                android:layout_width="30dp"
+
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/return0arrow" />
+
+            <TextView
+                android:id="@+id/tv_cinema0choose_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="影 院"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_cinema0choose_city"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/iv_cinema0choose_choose"
+                android:gravity="center"
+                android:text="杭州"
+                android:textSize="20dp" />
+
+            <ImageView
+                android:id="@+id/iv_cinema0choose_choose"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/tv_cinema0choose_city"
+                android:layout_marginRight="20dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/choose" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <include layout="@layout/film_guid" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_cinema0choose_cinemas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left">
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.example.hopjs.filmcinema.UI.Fragment.SidebarFragment"
+            android:id="@+id/f_cinema0choose_sidebar"/>
+    </RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -1,37 +1,28 @@
 package com.example.hopjs.filmcinema.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.hopjs.filmcinema.Common.ShowTool;
+import com.example.hopjs.filmcinema.Data.UserAccount;
 import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 
 import java.util.ArrayList;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.example.hopjs.filmcinema.MyApplication;
-import com.example.hopjs.filmcinema.R;
-
-import java.util.ArrayList;
+import com.example.hopjs.filmcinema.UI.FilmDetail;
+import com.example.hopjs.filmcinema.UI.Login;
 
 /**
  * Created by Hopjs on 2016/10/14.
@@ -134,6 +125,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
         private TextView tvLastItem;
         private OnItemClickListener itemClickListener;
         private OnLastItemClickListener lastItemClickListener;
+        private Context context;
         @Override
         public void onClick(View v) {
             switch (v.getId()){
@@ -141,19 +133,27 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
                 itemClickListener.onItemClick(v,id);
                 break;
                 case R.id.iv_film0detail_critic_body_praise:
-                if(isPraise){
-                    isPraise = false;
-                    //sendtoServer
-                    String num = tvPraise.getText().toString();
-                    tvPraise.setText(Integer.parseInt(num)-1+"");
-                    ivPraise.setImageResource(R.drawable.notpraise);
-                }else {
-                    isPraise = true;
-                    //sendtoServer
-                    String num = tvPraise.getText().toString();
-                    tvPraise.setText(Integer.parseInt(num)+1+"");
-                    ivPraise.setImageResource(R.drawable.haspraise);
-                }
+                    UserAccount userAccount = ((MyApplication)context.getApplicationContext()).userAccount;
+                    if(userAccount.isLogin()) {
+                        if (isPraise) {
+                            isPraise = false;
+                            //sendtoServer
+                            String num = tvPraise.getText().toString();
+                            tvPraise.setText(Integer.parseInt(num) - 1 + "");
+                            ivPraise.setImageResource(R.drawable.notpraise);
+                        } else {
+                            isPraise = true;
+                            //sendtoServer
+                            String num = tvPraise.getText().toString();
+                            tvPraise.setText(Integer.parseInt(num) + 1 + "");
+                            ivPraise.setImageResource(R.drawable.haspraise);
+                        }
+                    }else {
+                        /*Login login = new Login((Activity) context,((FilmDetail)context).handler,
+                                ((FilmDetail)context).LOGIN);
+                        login.show();*/
+                        Toast.makeText(context,"请登录",Toast.LENGTH_SHORT).show();
+                    }
                 break;
                 case R.id.tv_film0detail_critic_footer_more:
                 lastItemClickListener.onLastItemClick(v);
@@ -163,8 +163,9 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
         }
 
         public ViewHolder(View itemView, int viewType, OnItemClickListener
-                itemClickListener,OnLastItemClickListener lastItemClickListener) {
+                itemClickListener,OnLastItemClickListener lastItemClickListener,Context context) {
             super(itemView);
+            this.context=context;
             if(viewType == TYPE_CRITIC){
                 tvName = (TextView)itemView.findViewById
                         (R.id.tv_film0detail_critic_body_name);
@@ -206,6 +207,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
 
     private static final int TYPE_CRITIC = 1;
     private static final int TYPE_FOOTER = 2;
+    private boolean isAll;
     private ArrayList<Critic> critics;
     private Context context;
     private OnItemClickListener itemClickListener;
@@ -230,9 +232,10 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             holder.id = critics.get(position).getId();
             holder.tvName.setText(critics.get(position).getName());
             holder.tvPraise.setText(critics.get(position).getPraise());
-            holder.tvDate.setText(critics.get(position).getDate());
+            String tem= ShowTool.showCriticTime(critics.get(position).getDate());
+            holder.tvDate.setText(tem);
             holder.tvContent.setText(critics.get(position).getContent());
-            holder.rbRating.setRating(critics.get(position).getScord());
+            holder.rbRating.setRating(critics.get(position).getScord()/2f);
             holder.isPraise = critics.get(position).isPraise;
             if(critics.get(position).isPraise){
                 holder.ivPraise.setImageResource(R.drawable.haspraise);
@@ -244,15 +247,21 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             holder.ivPortrait.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
-            temUrl.addHeader("portraitName",critics.get(position).getPortraitName());
+            temUrl.addHeader("portraitName","Portraits/"+critics.get(position).getPortraitName());
             Glide.with(context)
                     .load(temUrl.getSurl())
-                    .placeholder(R.drawable.x)
-                    .error(R.drawable.w)
+                    .error(R.drawable.userportrait)
                     .into(holder.ivPortrait);
+        }else {
+            if(isAll)holder.tvLastItem.setText("没有更多了");
+            else holder.tvLastItem.setText("加载更多");
         }
     }
 
+    public void setIsAll(boolean isAll){
+        this.isAll=isAll;
+        notifyItemChanged(getItemCount());
+    }
     @Override
     public int getItemViewType(int position) {
         if(position < getItemCount()-1){
@@ -273,7 +282,7 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
                     (R.layout.film0detail_critic_footer,parent,false);
         }
         ViewHolder viewHolder = new ViewHolder(view,viewType,
-                itemClickListener,lastItemClickListener);
+                itemClickListener,lastItemClickListener,context);
         return viewHolder;
     }
     public void add(ArrayList<Critic> critics){
@@ -281,5 +290,9 @@ public class CriticAdapter extends RecyclerView.Adapter<CriticAdapter.ViewHolder
             this.critics.add(critic);
             notifyItemInserted(this.critics.size());
         }
+    }
+    public void add(Critic critic){
+        this.critics.add(0,critic);
+        notifyItemInserted(0);
     }
 }

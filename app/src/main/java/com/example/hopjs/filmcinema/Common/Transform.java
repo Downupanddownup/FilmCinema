@@ -44,11 +44,13 @@ public class Transform {
         intent.putExtra("id",cinemaId);
         activity.startActivity(intent);
     }
-    public static void toSeatChoose(Activity activity,String cinemaId,String filmId,String sessionId){
+    public static void toSeatChoose(Activity activity,String cinemaId,String filmId,
+                                    String sessionId,String price){
         Intent intent = new Intent(activity, SeatChoose.class);
         intent.putExtra("cinemaId",cinemaId);
         intent.putExtra("filmId",filmId);
         intent.putExtra("sessionId",sessionId);
+        intent.putExtra("price",price);
         activity.startActivity(intent);
     }
     public static void toRegister(Activity activity){
@@ -108,13 +110,14 @@ public class Transform {
         intent.putExtra("filmId",filmId);
         activity.startActivity(intent);
     }
-    public static void toCritic(Activity activity,String filmId){
+    public static void toCritic(Activity activity,String filmId,int requestCode){
         Intent intent = new Intent(activity, Critic.class);
         intent.putExtra("filmId",filmId);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent,requestCode);
     }
-    public static void toConfirm(Activity activity){
+    public static void toConfirm(Activity activity,String sessionId){
         Intent intent = new Intent(activity, Confirm.class);
+        intent.putExtra("sessionId",sessionId);
         activity.startActivity(intent);
     }
 }

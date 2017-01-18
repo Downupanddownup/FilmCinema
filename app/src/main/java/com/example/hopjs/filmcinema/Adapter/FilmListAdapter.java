@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.hopjs.filmcinema.Common.ShowTool;
 import com.example.hopjs.filmcinema.Data.FilmList;
 import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
@@ -25,8 +26,9 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
     public static final int TYPE_NOWSHOWING = 1;
     public static final int TYPE_UPCOMING = 2;
     public static final int TYPE_SEARCH = 3;
-    public final int TYPE_FOOTER = 3;
+    public final int FOOTER = 4;
     private int type;
+    private boolean isAll;
     private ArrayList<FilmList> filmLists;
     private Context context;
     private FilmListAdapter.myOnItemClickListener listener;
@@ -53,10 +55,14 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
             listener.onItemClick(v,id);
         }
 
-        public ViewHolder(View itemView, int vhType, FilmListAdapter.myOnItemClickListener listener)  {
+        public ViewHolder(View itemView, int vhType, FilmListAdapter.myOnItemClickListener listener,boolean isFooter)  {
             super(itemView);
             switch (vhType){
                 case TYPE_NOWSHOWING:
+                    if(isFooter){
+                        footer = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_footer_tips);
+                        return;
+                    }
                     poster = (ImageView) itemView.findViewById(R.id.iv_fragment_film0list_now0showing_poster);
                     name = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_now0showing_name);
                     scord = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_now0showing_scord);
@@ -64,18 +70,20 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
                     showingTimes = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_now0showing_showing0times);
                     break;
                 case TYPE_UPCOMING:
+                    if(isFooter){
+                        footer = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_footer_tips);
+                        return;
+                    }
                     poster = (ImageView) itemView.findViewById(R.id.iv_fragment_film0list_upcoming_poster);
                     name = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_upcoming_name);
                     scord = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_upcoming_scord);
                     type = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_upcoming_type);
                     date = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_upcoming_date);
                     break;
-                case TYPE_FOOTER:
-                    footer = (TextView) itemView.findViewById(R.id.tv_fragment_film0list_footer_tips);
-                    break;
             }
             this.listener = listener;
             itemView.setOnClickListener(this);
+
         }
 
     }
@@ -86,6 +94,10 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
         this.filmLists = filmLists;
         this.listener = listener;
         this.type = type;
+    }
+    public void setIsAll(boolean isAll){
+        this.isAll=isAll;
+        if(isAll)notifyItemChanged(getItemCount()-1);
     }
 
     public void add(FilmList filmList){
@@ -103,28 +115,35 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
             holder.poster.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("posterName",filmLists.get(position).getPosterName());
+            temUrl.addHeader("posterName","Posters/"+filmLists.get(position).getPosterName());
             Glide.with(context)
                     .load(temUrl.getSurl())
-                    .placeholder(R.drawable.x)
-                    .error(R.drawable.w)
+                    .error(R.drawable.white)
                     .into(holder.poster);
             holder.name.setText(filmLists.get(position).getName());
             holder.scord.setText(filmLists.get(position).getScord());
             if (type == TYPE_NOWSHOWING) {
-                holder.cinemaNum.setText(filmLists.get(position).getCinemaNum());
-                holder.showingTimes.setText(filmLists.get(position).getShowingTimes());
+                String tem="今日有"+filmLists.get(position).getCinemaNum()+
+                        "家影院放映";
+                holder.cinemaNum.setText(tem);
+                tem="共有"+filmLists.get(position).getShowingTimes()+
+                        "个放映场次";
+                holder.showingTimes.setText(tem);
             } else {
                 holder.type.setText(filmLists.get(position).getType());
-                holder.date.setText(filmLists.get(position).getDate());
+                String tem = ShowTool.getUpcomingListFragmentDate(filmLists.get(position).getDate());
+                holder.date.setText(tem);
             }
+        }else {
+            if(isAll) holder.footer.setText("没有更多了");
+            else holder.footer.setText("正在加载...");
         }
     }
 
     @Override
     public FilmListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        if(viewType != TYPE_FOOTER) {
+        if(viewType != FOOTER) {
             if (type == TYPE_NOWSHOWING) {
                 view = LayoutInflater.from(context).inflate
                         (R.layout.fragment_film0list_now0showing, parent, false);
@@ -136,7 +155,7 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
             view = LayoutInflater.from(context).inflate
                     (R.layout.fragment_film0list_footer, parent, false);
         }
-        FilmListAdapter.ViewHolder viewHolder = new FilmListAdapter.ViewHolder(view,type,listener);
+        FilmListAdapter.ViewHolder viewHolder = new FilmListAdapter.ViewHolder(view,type,listener,viewType == FOOTER);
         return viewHolder;
     }
 
@@ -148,7 +167,7 @@ public class FilmListAdapter extends RecyclerView.Adapter<FilmListAdapter.ViewHo
     @Override
     public int getItemViewType(int position) {
         if(position+1 == getItemCount()) {
-            return TYPE_FOOTER;
+            return FOOTER;
         }else{
             return 0;
         }

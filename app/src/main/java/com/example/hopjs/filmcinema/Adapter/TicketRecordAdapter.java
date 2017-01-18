@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.hopjs.filmcinema.Common.ShowTool;
 import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.R;
 
@@ -161,12 +162,18 @@ public class TicketRecordAdapter extends RecyclerView.Adapter<TicketRecordAdapte
     private ArrayList<TicketRecord> ticketRecords;
     private Context context;
     private OnItemClickListener itemClickListener;
+    private boolean isAll;
 
     public TicketRecordAdapter(Context context,ArrayList<TicketRecord> ticketRecords, OnItemClickListener
             itemClickListener) {
         this.context = context;
         this.ticketRecords = ticketRecords;
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setAll(boolean all) {
+        isAll = all;
+        if(isAll)notifyItemChanged(getItemCount()-1);
     }
 
     @Override
@@ -180,16 +187,23 @@ public class TicketRecordAdapter extends RecyclerView.Adapter<TicketRecordAdapte
             holder.filmId = ticketRecords.get(position).getFilmId();
             holder.tvFilmName.setText(ticketRecords.get(position).getFilmName());
             holder.tvCinemName.setText(ticketRecords.get(position).getCinemaName());
-            holder.tvDate.setText(ticketRecords.get(position).getDate());
-            holder.tvVideoHall.setText(ticketRecords.get(position).getVideoHall());
-            holder.tvTime.setText(ticketRecords.get(position).getTime());
-            holder.tvTicketNum.setText(ticketRecords.get(position).getTickets().size()+"");
+            String tem= ShowTool.getUpcomingDate(ticketRecords.get(position).getDate());
+            holder.tvDate.setText(tem+"放映");
+            tem=ticketRecords.get(position).getVideoHall()+"号放映厅";
+            holder.tvVideoHall.setText(tem);
+            tem=ShowTool.sessionStartTime(ticketRecords.get(position).getTime());
+            holder.tvTime.setText(tem+"开始");
+            holder.tvTicketNum.setText("共"+ticketRecords.get(position).getTickets().size()+"张票：");
             String tickets = "";
             for(int i:ticketRecords.get(position).getTickets()) {
                 tickets += i+"号 ";
             }
             holder.tvTicket.setText(tickets);
-            holder.tvBuyDate.setText(ticketRecords.get(position).getBuyTime());
+            tem=ShowTool.showCriticTime(ticketRecords.get(position).getBuyTime());
+            holder.tvBuyDate.setText("于"+tem+"购买");
+        }else {
+            if(isAll)holder.tvLastItem.setText("没有更多了");
+            else holder.tvLastItem.setText("正在加载");
         }
     }
 

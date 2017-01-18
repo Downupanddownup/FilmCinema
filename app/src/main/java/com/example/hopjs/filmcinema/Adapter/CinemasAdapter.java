@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.hopjs.filmcinema.Common.ShowTool;
 import com.example.hopjs.filmcinema.Data.Cinema;
 import com.example.hopjs.filmcinema.R;
 
@@ -22,6 +23,7 @@ public class CinemasAdapter extends RecyclerView.Adapter<CinemasAdapter.ViewHold
     private ArrayList<Cinema> cinemas;
     private Context context;
     private OnItemClickListener listener;
+    private boolean isAll;
 
     public interface OnItemClickListener{
         public void onItemClick(View view,String id);
@@ -37,6 +39,7 @@ public class CinemasAdapter extends RecyclerView.Adapter<CinemasAdapter.ViewHold
         private TextView name,lprice,address,distance;
         private String id;
         private OnItemClickListener listener;
+        private TextView tvFooter;
 
         @Override
         public void onClick(View v) {
@@ -45,17 +48,23 @@ public class CinemasAdapter extends RecyclerView.Adapter<CinemasAdapter.ViewHold
 
         public ViewHolder(View itemView, OnItemClickListener listener, int type) {
             super(itemView);
-            this.listener = listener;
-            itemView.setOnClickListener(this);
             if(type == CinemasAdapter.TYPE_CINEMA){
+                this.listener = listener;
+                itemView.setOnClickListener(this);
                 name = (TextView)itemView.findViewById(R.id.tv_fragment_cinemas_item_name);
                 lprice = (TextView)itemView.findViewById(R.id.tv_fragment_cinemas_item_lprice);
                 address = (TextView)itemView.findViewById(R.id.tv_fragment_cinemas_item_address);
                 distance = (TextView)itemView.findViewById(R.id.tv_fragment_cinemas_item_distance);
+            }else {
+                tvFooter=(TextView)itemView.findViewById(R.id.tv_fragment_film0list_footer_tips);
             }
         }
     }
 
+    public void setIsAll(boolean isAll){
+        this.isAll=isAll;
+        if(isAll)notifyItemChanged(getItemCount()-1);
+    }
 
     public void add(Cinema cinema){
         cinemas.add(cinema);
@@ -65,14 +74,31 @@ public class CinemasAdapter extends RecyclerView.Adapter<CinemasAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if(position+1 != getItemCount()){
+            String tem;
             holder.id = cinemas.get(position).getId();
             holder.name.setText(cinemas.get(position).getName());
-            holder.lprice.setText(cinemas.get(position).getlPrice());
-            holder.address.setText(cinemas.get(position).getAddress());
-            holder.distance.setText(cinemas.get(position).getDistance());
+            tem="￥"+cinemas.get(position).getlPrice()+"起步";
+            holder.lprice.setText(tem);
+            String address=cinemas.get(position).getAddress();
+            holder.address.setText(getAddress(address));
+            tem= ShowTool.showDistance(cinemas.get(position).getDistance());
+            holder.distance.setText(tem);
+        }else {
+            if(isAll)holder.tvFooter.setText("没有更多了");
+            else holder.tvFooter.setText("正在加载...");
         }
     }
 
+    private String getAddress(String address){
+        String ad="";
+        for(int i=0;i<15&&i<address.length();++i){
+            ad+=address.charAt(i);
+        }
+        if(address.length()>15){
+            ad+="...";
+        }
+        return ad;
+    }
     @Override
     public int getItemCount() {
         return cinemas.size()+1;

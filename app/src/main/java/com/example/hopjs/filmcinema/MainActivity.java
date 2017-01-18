@@ -1,5 +1,6 @@
 package com.example.hopjs.filmcinema;
 
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int FILM = 1;
     public static final int CINEMA = 2;
     public static final int PCENTER = 3;
+    private int currestPager;
     private ViewPager viewPager;
     private PagerBottomTabLayout pagerBottomTabLayout;
     private FragAdapter fragAdapter;
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        currestPager = HOMEPAGE;
         viewPager = (ViewPager)findViewById(R.id.vp_view);
         final List<Fragment> fragments = new ArrayList<>();
 
@@ -74,19 +77,7 @@ public class MainActivity extends AppCompatActivity {
         fragments.add(filmFragment);
         fragments.add(cinemaFragment);
         fragments.add(pcenterFragment);
-/*
-        String[] strings = {"这是主页","这是电影","这是影院","这是个人中心"};
-        fragments.add(new Fragment1());
-        fragments.add(new Fragment1());
-        fragments.add(new Fragment1());
-        fragments.add(new Fragment1());
-        int i = 0;
-        for(String s:strings){
-            Bundle bundle = new Bundle();
-            bundle.putCharSequence("text",s);
-            fragments.get(i).setArguments(bundle);
-            ++i;
-        }*/
+
         fragAdapter = new FragAdapter(getSupportFragmentManager(),fragments);
         viewPager.setAdapter(fragAdapter);
         viewPager.setOffscreenPageLimit(3);
@@ -108,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!cLock) {
                         vpLock = true;
                         controller.setSelect(viewPager.getCurrentItem());
+                        currestPager = viewPager.getCurrentItem();
                     }else {
                             cLock = false;
                     }
@@ -115,16 +107,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        viewPager.setCurrentItem(HOMEPAGE);
+
         pagerBottomTabLayout = (PagerBottomTabLayout)findViewById(R.id.pbtl_guid);
         controller = pagerBottomTabLayout.builder()
-                .addTabItem(R.drawable.home_page, "首页",getResources().getColor(R.color.colorRed))
-                .addTabItem(R.drawable.film, "电影",getResources().getColor(R.color.colorAccent))
-                .addTabItem(R.drawable.cinema, "影院",getResources().getColor(R.color.colorYellow))
-                .addTabItem(R.drawable.person_center, "个人中心",getResources().getColor(R.color.colorGreen))
+                .addTabItem(R.drawable.home_page, "首页",getResources().getColor(R.color.ButtomGuidBar))
+                .addTabItem(R.drawable.film, "电影",getResources().getColor(R.color.ButtomGuidBar))
+                .addTabItem(R.drawable.cinema, "影院",getResources().getColor(R.color.ButtomGuidBar))
+                .addTabItem(R.drawable.person_center, "个人中心",getResources().getColor(R.color.ButtomGuidBar))
                 .setMode(TabLayoutMode.CHANGE_BACKGROUND_COLOR | TabLayoutMode.HIDE_TEXT)
                 .build();
-       // controller.setSelect(0);
+
         controller.addTabItemClickListener(new OnTabItemSelectListener(){
             @Override
             public void onSelected(int index, Object tag) {
@@ -136,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 if(!vpLock){
                     cLock = true;
                     viewPager.setCurrentItem(index);
+                    currestPager = index;
                     Log.e("Mainaaaaa","this is guid:"+index+" cLock:"+cLock);
                 }else {
                     vpLock = false;
@@ -155,11 +148,60 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        int location = HOMEPAGE;
+        /*int location = HOMEPAGE;
         if(getIntent()!= null) {
             location = getIntent().getIntExtra("location",HOMEPAGE);
         }
         viewPager.setCurrentItem(location);
-        controller.setSelect(location);
+        controller.setSelect(location);*/
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("MainActivity.java","onStop");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i("MainActivity.java","onSaveInstanceState");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Log.i("MainActivity.java","onRestoreInstanceState protected");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+        Log.i("MainActivity.java","onRestoreInstanceState public");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currestPager = getIntent().getIntExtra("location",currestPager);
+        getIntent().removeExtra("location");
+        viewPager.setCurrentItem(currestPager);
+        controller.setSelect(currestPager);
+        Log.i("MainActivity.java","onStart"+currestPager);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+       // viewPager.setCurrentItem(currestPager);
+    //    controller.setSelect(currestPager);
+        Log.i("MainActivity.java","onResume"+currestPager);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("MainActivity.java","onPause"+currestPager);
     }
 }

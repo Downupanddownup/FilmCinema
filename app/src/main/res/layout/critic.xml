@@ -39,9 +39,9 @@
         android:id="@+id/rb_critic_scord"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:progressTint="@color/colorAccent"
-        android:progressBackgroundTint="@color/colorAccent"
-        android:secondaryProgressTint="@color/colorAccent"
+        android:progressTint="@color/ButtomGuidBar"
+        android:progressBackgroundTint="@color/ButtomGuidBar"
+        android:secondaryProgressTint="@color/ButtomGuidBar"
         android:numStars="5"
         android:rating="0"
         android:stepSize="0.1" />

@@ -1,21 +1,31 @@
 package com.example.hopjs.filmcinema.UI;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.hopjs.filmcinema.Common.ShowTool;
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.Data.Result;
 import com.example.hopjs.filmcinema.Data.TicketInformation;
+import com.example.hopjs.filmcinema.Data.UserAccount;
 import com.example.hopjs.filmcinema.MyApplication;
+import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
+import com.example.hopjs.filmcinema.Test.Test;
 import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
 import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +47,32 @@ public class Confirm extends AppCompatActivity {
     private NiftyDialogBuilder dialogBuilder;
     private LinearLayout llPayfor;
     private Button btZhifubao,btWeixin;
+    private String sessionId;
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.arg2){
+                case Result.RESULT_OK:
+                    Toast.makeText(getApplication(),
+                            "购买成功",Toast.LENGTH_SHORT).show();
+                    Transform.toPcenter(Confirm.this);
+                    break;
+                case Result.RESULT_NOT_NETWORK:
+                    Toast.makeText(getApplication(),
+                            "购买失败，请检查您的网络",Toast.LENGTH_SHORT).show();
+                    break;
+                case Result.RESULT_TICKET_BOUGHT:
+                    Toast.makeText(getApplication(),
+                            "购买失败，部分票已被购买",Toast.LENGTH_SHORT).show();
+                    break;
+                case Result.RESULT_TICKET_OUTDATE:
+                    Toast.makeText(getApplication(),
+                            "购买失败，该场次的票已停止销售",Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,17 +98,22 @@ public class Confirm extends AppCompatActivity {
         dialogBuilder = NiftyDialogBuilder.getInstance(this);
         btPayfor.setOnClickListener(listener);
         ticketInformation = ((MyApplication)this.getApplicationContext()).ticketInformation;
+        //ticketInformation= Test.getTicketInformation();
+        sessionId=getIntent().getStringExtra("sessionId");
         setData();
         llPayfor = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.payfor,null,false);
         btZhifubao = (Button)llPayfor.findViewById(R.id.bt_payfor_zhifubao);
         btWeixin = (Button)llPayfor.findViewById(R.id.bt_payfor_weixin);
         btWeixin.setOnClickListener(listener);
         btZhifubao.setOnClickListener(listener);
+
+        tvTitle.setText("确认与支付");
     }
 
     private void setData(){
         tvFilmName.setText(ticketInformation.getFilmName());
-        tvDate.setText(ticketInformation.getDate());
+        String tem= ShowTool.getUpcomingListFragmentDate(ticketInformation.getDate());
+        tvDate.setText(tem);
         tvCiname.setText(ticketInformation.getCinemaName());
         tvVideoHall.setText(ticketInformation.getVideoHallNum());
         tvTime.setText(ticketInformation.getTime());
@@ -99,12 +140,12 @@ public class Confirm extends AppCompatActivity {
         tvLoverTicketSum.setText(loversTicketSum+"");
         tvLoverTicketNum.setText(loversTickets);
 
-        int price = 0;
+        float price = 0;
         if(ticketInformation.getPrice() != null)
         {
-            price = Integer.parseInt(ticketInformation.getPrice());
+            price = Float.parseFloat(ticketInformation.getPrice());
         }
-        tvPrice.setText(price*ticketInformation.getTicketSum()+"");
+        tvPrice.setText(price+"");
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
@@ -115,6 +156,7 @@ public class Confirm extends AppCompatActivity {
                     dialogBuilder
                             .withTitle("支 付")
                             .withMessage("            请选择支付方式")
+                            .withDialogColor(getResources().getColor(R.color.ButtomGuidBar))
                             .withDuration(500)
                             .withEffect(Effectstype.Fall)
                             .isCancelableOnTouchOutside(true)
@@ -122,10 +164,12 @@ public class Confirm extends AppCompatActivity {
                             .show();
                     break;
                 case R.id.bt_payfor_zhifubao:
-                    Transform.toHomePage(Confirm.this);
+                    sendBuyTicketPost();
+                    dialogBuilder.dismiss();
                     break;
                 case R.id.bt_payfor_weixin:
-                    Transform.toHomePage(Confirm.this);
+                    sendBuyTicketPost();
+                    dialogBuilder.dismiss();
                     break;
                 case R.id.iv_header_return:
                     finish();
@@ -136,6 +180,39 @@ public class Confirm extends AppCompatActivity {
             }
         }
     };
-
+    private void sendBuyTicketPost(){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                UserAccount userAccount=((MyApplication)getApplicationContext()).userAccount;
+                ArrayList<Integer> list=new ArrayList<Integer>();
+                for(SeatChoose.seat tem:ticketInformation.getTickets()){
+                    list.add(tem.getSeatNum());
+                }
+                Time time=new Time("GTM");
+                time.setToNow();
+                String buyTime=""+time.year
+                        +isOneOrTwo(time.month+1)
+                        +isOneOrTwo(time.monthDay)
+                        +isOneOrTwo((time.hour+8)%24+1)
+                        +isOneOrTwo(time.minute);
+                Result r= Connect.postBuyTicket(sessionId,
+                        userAccount.getUserId(),
+                        ticketInformation.getCinemaId(),
+                        buyTime,
+                        ticketInformation.getFilmId(),
+                        list);
+                Message message=Message.obtain();
+                message.arg2=r.getCode();
+                handler.sendMessage(message);
+            }
+        }.start();
+    }
+    private String isOneOrTwo(int d){
+        String date=d+"";
+        if(date.length()==1)return "0"+date;
+        else return date;
+    }
 
 }

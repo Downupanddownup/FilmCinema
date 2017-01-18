@@ -20,10 +20,15 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.Data.TicketInformation;
+import com.example.hopjs.filmcinema.Data.UserAccount;
+import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
+import com.example.hopjs.filmcinema.UI.Fragment.SidebarFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,21 +40,30 @@ import java.util.Random;
  */
 
 public class SeatChoose extends AppCompatActivity {
+    private static final int LOAD_SEATDATE=1;
+    private static final int SEAT_STATE_CHANGED=2;
+    private static final int LOGIN=3;
+    private static final int ADDSEAT=4;
+    private static final int REMOVESEAT=5;
     TextView tvTitle;
     ImageView imReturn,imSearch;
     ListView lvRow;
     GridView gvSeat;
     Button btPart,btAll;
-    TextView tvPicNum;
+    TextView tvPicSum,tvPrice;
     Button btNext;
+    private SidebarFragment sidebarFragment;
+    private int picSum=0;
 
     CinemaSeat seats;
-    GridViewSeatAdapter gvsAdapter;
+    private ArrayList<seat> readyBuyList;
+    GridViewSeatAdapter gvsAdapter=null;
     ListViewSeatRowAdapter lvsrAdapter;
     Handler handler;
     private String cinemaId;
     private String sessionId;
     private String filmId;
+    private float price;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,8 +77,11 @@ public class SeatChoose extends AppCompatActivity {
         gvSeat = (GridView)findViewById(R.id.gv_seat0choose_seat);
         btPart = (Button)findViewById(R.id.bt_seat0choose_part);
         btAll = (Button)findViewById(R.id.bt_seat0choose_all);
-        tvPicNum = (TextView)findViewById(R.id.tv_seat0choose_picnum);
+        tvPicSum = (TextView)findViewById(R.id.tv_seat0choose_picnum);
         btNext = (Button)findViewById(R.id.bt_seat0choose_next);
+        sidebarFragment = (SidebarFragment)getSupportFragmentManager().
+                findFragmentById(R.id.f_seat0choose_sidebar);
+        tvPrice = (TextView)findViewById(R.id.tv_seat0choose_price);
 
         imReturn.setOnClickListener(listener);
         imSearch.setOnClickListener(listener);
@@ -76,17 +93,27 @@ public class SeatChoose extends AppCompatActivity {
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                if(msg.arg1 == 1) {
-                    setPartSeatData();
-                }else {
-                    tvPicNum.setText(msg.arg2+"");
+                switch (msg.arg1){
+                    case LOAD_SEATDATE:
+                        setPartSeatData();
+                        break;
+                    case SEAT_STATE_CHANGED:
+                        tvPicSum.setText(msg.arg2+"");
+                        picSum=Integer.parseInt(tvPicSum.getText().toString());
+                        String tem=picSum*price+"";
+                        tvPrice.setText("总票价："+tem);
+                        break;
+                    case LOGIN:
+                        sidebarFragment.loadUserInfor();
+                        break;
                 }
             }
         };
-
+        readyBuyList=new ArrayList<>();
         cinemaId = getIntent().getStringExtra("cinemaId");
         sessionId = getIntent().getStringExtra("sessionId");
         filmId = getIntent().getStringExtra("filmId");
+        price = Float.parseFloat(getIntent().getStringExtra("price"));
         loadSeatData();
     }
 
@@ -107,23 +134,44 @@ public class SeatChoose extends AppCompatActivity {
                     setAllSeatData();
                     break;
                 case R.id.bt_seat0choose_next:
-                    Transform.toConfirm(SeatChoose.this);
+                    if(picSum==0) {
+                        Toast.makeText(getApplicationContext(),
+                                "请选择座位", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    UserAccount userAccount = ((MyApplication)getApplicationContext()).userAccount;
+                    if(userAccount.isLogin()) {
+                        TicketInformation ticketInformation=((MyApplication)getApplicationContext()).ticketInformation;
+                      //  ticketInformation.setTickets();
+                        ticketInformation.setTickets(getTickets());
+                        ticketInformation.setPrice(price*picSum+"");
+                        Transform.toConfirm(SeatChoose.this,sessionId);
+                    }else {
+                        Login login = new Login(SeatChoose.this,handler,LOGIN);
+                        login.show();
+                    }
                     break;
             }
         }
     };
+    private ArrayList<seat> getTickets(){
+        if(gvsAdapter==null)return new ArrayList<>();
+        ArrayList<seat> data=new ArrayList<>();
+        for(seat tem:gvsAdapter.getData()){
+            if(tem.getSeat_state()==seat.STATE_CHOOSING_SEAT){
+                data.add(tem);
+            }
+        }
+        return data;
+    }
     private void loadSeatData(){
         new Thread(){
             @Override
             public void run() {
                 Message msg = new Message();
-                msg.arg1 = 1;
-                /*seats = new CinemaSeat();
-                seats.setCoulmns(40);
-                seats.setRow(10);
-                List<seat> tem = new ArrayList<seat>();
-                for(int i =0;i<400;++i)tem.add(getSeat());
-                seats.setSeatList(tem);*/
+                msg.arg1 = LOAD_SEATDATE;
+                seats = new CinemaSeat();
+
                 seats = Connect.getSeat(cinemaId,filmId,sessionId);
                 setListViewOnTouchAndScrollListener(lvRow,gvSeat,seats.getCoulmns());
                 handler.sendMessage(msg);
@@ -131,7 +179,53 @@ public class SeatChoose extends AppCompatActivity {
         }.start();
     }
 
-    private seat getSeat(){
+    public  CinemaSeat getCinemaSeatOne(){
+        CinemaSeat cinemaSeat = new CinemaSeat();
+        ArrayList<seat> content = new ArrayList<>();
+        cinemaSeat.setCoulmns(12);
+        cinemaSeat.setRow(10);
+        for(int i=0;i<120;++i){
+            if(i%12==0&&i>=40){
+                content.add(getNoneSeat());
+            }else if(i%12==11&&i<50){
+                content.add(getNoneSeat());
+            }else if(i>108&&i<119){
+                content.add(getLoversSeat().get(0));
+                i++;
+                content.add(getLoversSeat().get(1));
+            }else {
+                if(i==119){
+                    content.add(getNoneSeat());
+                }else {
+                    content.add(getNormalSeat());
+                }
+            }
+        }
+        cinemaSeat.setSeatList(content);
+        return cinemaSeat;
+    }
+    public  CinemaSeat getCinemaSeatTwo(){
+        CinemaSeat cinemaSeat = new CinemaSeat();
+        ArrayList<seat> content = new ArrayList<>();
+        cinemaSeat.setCoulmns(19);
+        cinemaSeat.setRow(11);
+        for(int i=0;i<209;++i){
+            if(i>=5*19&&i<6*19){
+                content.add(getNoneSeat());
+            } else if(i>=10*19){
+                if(i%2==0){
+                    content.add(getLoversSeat().get(0));
+                }else {
+                    content.add(getLoversSeat().get(1));
+                }
+            }else {
+                content.add(getNormalSeat());
+            }
+        }
+        cinemaSeat.setSeatList(content);
+        return cinemaSeat;
+    }
+    private seat getNormalSeat(){
         seat s = new seat();
         Random random = new Random();
         //  s.setSeat_type(random.nextInt()%3);
@@ -139,6 +233,29 @@ public class SeatChoose extends AppCompatActivity {
         s.setSeat_type(1);
         s.setSeat_state(4);
         return s;
+    }
+    private seat getNoneSeat(){
+        seat s = new seat();
+        Random random = new Random();
+        //  s.setSeat_type(random.nextInt()%3);
+        //  s.setSeat_state(random.nextInt()%3+3);
+        s.setSeat_type(3);
+        s.setSeat_state(4);
+        return s;
+    }
+    private ArrayList<seat> getLoversSeat(){
+        seat right = new seat();
+        seat left = new seat();
+        right.setSeat_type(seat.LOVERS_SEAT);
+        right.setSeat_state(seat.STATE_EMPTY_SEAT);
+        right.setLovers_locat(seat.LOVERS_RIGHT);
+        left.setSeat_type(seat.LOVERS_SEAT);
+        left.setSeat_state(seat.STATE_EMPTY_SEAT);
+        left.setLovers_locat(seat.LOVERS_LEFT);
+        ArrayList<seat> seats = new ArrayList<>();
+        seats.add(left);
+        seats.add(right);
+        return seats;
     }
 
     private void setPartSeatData(){
@@ -163,7 +280,10 @@ public class SeatChoose extends AppCompatActivity {
         gvSeat.setColumnWidth(width);
 
         gvSeat.setLayoutParams(params);
+        if(gvsAdapter!=null)
+            seats.setSeatList(gvsAdapter.getData());
         gvsAdapter = new GridViewSeatAdapter(this,seats.getSeatList(),width,height,handler);
+        gvsAdapter.setPicNum(picSum);
         gvSeat.setAdapter(gvsAdapter);
         loadSeatRow(height+dip2px(1));
     }
@@ -191,7 +311,9 @@ public class SeatChoose extends AppCompatActivity {
         gvSeat.setColumnWidth(width);
 
         gvSeat.setLayoutParams(params);
+        seats.setSeatList(gvsAdapter.getData());
         gvsAdapter = new GridViewSeatAdapter(this,seats.getSeatList(),width,height,handler);
+        gvsAdapter.setPicNum(picSum);
         gvSeat.setAdapter(gvsAdapter);
         loadSeatRow(height+dip2px(1));
     }
@@ -265,14 +387,26 @@ public class SeatChoose extends AppCompatActivity {
         public final static int STATE_CHOSED_SEAT = 5;
         public final static int STATE_CHOOSING_SEAT =6;
 
+        public final static int LOVERS_RIGHT = 1;
+        public final static int LOVERS_LEFT = 2;
+
         private int seat_type;
         private int seat_state;
         private int seatNum;
+        private int lovers_locat;
 
         public seat() {
             super();
             seat_type = NONE_SEAT;
             seat_state = STATE_EMPTY_SEAT;
+        }
+
+        public int getLovers_locat() {
+            return lovers_locat;
+        }
+
+        public void setLovers_locat(int lovers_locat) {
+            this.lovers_locat = lovers_locat;
         }
 
         public void setSeat_type(int type){seat_type = type;}
@@ -359,7 +493,11 @@ public class SeatChoose extends AppCompatActivity {
                     }
                     else if(data.get(position).getSeat_type() == seat.LOVERS_SEAT){
                         //im.setImageResource(R.drawable.empty_lovers_seat);
-                        im.setImageResource(R.drawable.loverseat_empty);
+                        if(data.get(position).getLovers_locat()==seat.LOVERS_LEFT){
+                            im.setImageResource(R.drawable.loverseat0left);
+                        }else {
+                            im.setImageResource(R.drawable.loverseat0right);
+                        }
                     }else {
                         //  im.setImageResource(R.drawable.pic2);
                     }
@@ -383,7 +521,8 @@ public class SeatChoose extends AppCompatActivity {
                     }
                     else if(data.get(position).getSeat_type() == seat.LOVERS_SEAT){
                         //im.setImageResource(R.drawable.chosed_lovers_seat);
-                        im.setImageResource(R.drawable.loverseat_choosed);
+                        im.setImageResource(R.drawable.seat_choosing);
+
                     }else {
                         //  im.setImageResource(R.drawable.filmstart);
                     }
@@ -398,9 +537,14 @@ public class SeatChoose extends AppCompatActivity {
                         if(data.get(position).getSeat_state() != seat.STATE_CHOSED_SEAT){
                             if(data.get(position).getSeat_type() == seat.ORDINARY_SEAT) {
                                 if (data.get(position).getSeat_state() == seat.STATE_EMPTY_SEAT) {
-                                    data.get(position).setSeat_state(seat.STATE_CHOOSING_SEAT);
-                                    imm.setImageResource(R.drawable.seat_choosing);
-                                    picNum++;
+                                    if(picNum<5) {
+                                        data.get(position).setSeat_state(seat.STATE_CHOOSING_SEAT);
+                                        imm.setImageResource(R.drawable.seat_choosing);
+                                        picNum++;
+                                    }else {
+                                        Toast.makeText(getApplicationContext(),
+                                                "单次购票不能超过5张",Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
                                     data.get(position).setSeat_state(seat.STATE_EMPTY_SEAT);
                                     imm.setImageResource(R.drawable.seat_empty);
@@ -408,17 +552,34 @@ public class SeatChoose extends AppCompatActivity {
                                 }
                             }else {
                                 if (data.get(position).getSeat_state() == seat.STATE_EMPTY_SEAT) {
-                                    data.get(position).setSeat_state(seat.STATE_CHOOSING_SEAT);
-                                    imm.setImageResource(R.drawable.loverseat_choosing);
-                                    picNum += 2;
+                                    if(picNum<4) {
+                                        data.get(position).setSeat_state(seat.STATE_CHOOSING_SEAT);
+                                        if (data.get(position).getLovers_locat() == seat.LOVERS_LEFT) {
+                                            data.get(position + 1).setSeat_state(seat.STATE_CHOOSING_SEAT);
+                                        } else {
+                                            data.get(position - 1).setSeat_state(seat.STATE_CHOOSING_SEAT);
+                                        }
+                                        notifyDataSetChanged();
+                                        imm.setImageResource(R.drawable.loverseat_choosing);
+                                        picNum += 2;
+                                    }else {
+                                        Toast.makeText(getApplicationContext(),
+                                                "单次购票不能超过5张",Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
                                     data.get(position).setSeat_state(seat.STATE_EMPTY_SEAT);
+                                    if(data.get(position).getLovers_locat()==seat.LOVERS_LEFT){
+                                        data.get(position+1).setSeat_state(seat.STATE_EMPTY_SEAT);
+                                    }else{
+                                        data.get(position-1).setSeat_state(seat.STATE_EMPTY_SEAT);
+                                    }
+                                    notifyDataSetChanged();
                                     imm.setImageResource(R.drawable.loverseat_empty);
                                     picNum -= 2;
                                 }
                             }
                             message = new Message();
-                            message.arg1 = 2;
+                            message.arg1 = SEAT_STATE_CHANGED;
                             message.arg2 = picNum;
                             handler.sendMessage(message);
                         }
@@ -444,6 +605,13 @@ public class SeatChoose extends AppCompatActivity {
         @Override
         public long getItemId(int position) {
             return position;
+        }
+
+        public void setPicNum(int sum){
+            picNum=sum;
+        }
+        public ArrayList<seat> getData(){
+            return (ArrayList<seat>) data;
         }
     }
 

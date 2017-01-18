@@ -2,37 +2,39 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <com.example.hopjs.filmcinema.widgets.MyScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <LinearLayout
+        <com.example.hopjs.filmcinema.widgets.MyScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/header" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-            <include layout="@layout/cdetail_finfor" />
-
-            <include layout="@layout/cdetail_film" />
-
-            <fragment
-                android:id="@+id/f_cdetail_sessions"
-                android:name="com.example.hopjs.filmcinema.UI.Fragment.SessionFragment"
+            android:layout_height="wrap_content">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"/>
+                android:orientation="vertical"
+                android:layout_marginTop="40dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+                <include layout="@layout/cdetail_finfor" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"/>
-        </LinearLayout>
-    </com.example.hopjs.filmcinema.widgets.MyScrollView>
+                <include layout="@layout/cdetail_film" />
+
+                <fragment
+                    android:id="@+id/f_cdetail_sessions"
+                    android:name="com.example.hopjs.filmcinema.UI.Fragment.SessionFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"/>
+            </LinearLayout>
+        </com.example.hopjs.filmcinema.widgets.MyScrollView>
+        <include layout="@layout/header" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

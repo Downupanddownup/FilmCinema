@@ -152,12 +152,19 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     private ArrayList<Collection> collections;
     private Context context;
     private OnItemClickListener itemClickListener;
+    private boolean isAll;
 
     public CollectionAdapter(Context context,ArrayList<Collection> collections,
                              OnItemClickListener itemClickListener) {
         this.context = context;
         this.collections = collections;
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setAll(boolean all) {
+        isAll = all;
+        if(isAll)notifyItemChanged(getItemCount()-1);
+
     }
 
     @Override
@@ -170,21 +177,24 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         if(position < getItemCount()-1){
             holder.id = collections.get(position).getId();
             holder.tvName.setText(collections.get(position).getName());
-            holder.tvDirector.setText(collections.get(position).getDirector());
+            holder.tvDirector.setText("导演:"+collections.get(position).getDirector());
             holder.tvScord.setText(collections.get(position).getScord());
-            holder.tvTime.setText(collections.get(position).getTime());
+            holder.tvTime.setText(collections.get(position).getTime()+"分钟");
             holder.tvType.setText(collections.get(position).getType());
             /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(collections.get(position).getPosterId(),context,0.3);
             holder.ivPoster.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("posterName",collections.get(position).getPosterName());
+            temUrl.addHeader("posterName","Posters/"+collections.get(position).getPosterName());
             Glide.with(context)
                     .load(temUrl.getSurl())
                     .placeholder(R.drawable.x)
                     .error(R.drawable.w)
                     .into(holder.ivPoster);
+        }else {
+            if(isAll)holder.tvLastItem.setText("没有更多了");
+            else holder.tvLastItem.setText("正在加载");
         }
     }
 

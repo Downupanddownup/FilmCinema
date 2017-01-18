@@ -1,36 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="30dp">
+    android:layout_height="50dp"
+    android:id="@+id/rl_cinema_header_body"
+    android:background="@drawable/topguidbar">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="杭州"
         android:gravity="center"
-        android:layout_marginLeft="20dp"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
         android:id="@+id/tv_cinema_header_city"/>
     <ImageView
-        android:layout_width="15dp"
+        android:layout_width="20dp"
         android:layout_height="match_parent"
-        android:layout_toEndOf="@id/tv_cinema_header_city"
         android:src="@drawable/choose"
         android:scaleType="centerInside"
         android:layout_alignTop="@+id/tv_cinema_header_city"
-        android:id="@+id/iv_cinema_header_choose"/>
+        android:id="@+id/iv_cinema_header_choose"
+        android:layout_toRightOf="@+id/tv_cinema_header_city"
+        android:layout_marginLeft="10dp"
+/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="影院"
-        android:textSize="20dp"
+        android:text="影 院"
+        android:textSize="25dp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:id="@+id/tv_cinema_header_title"/>
     <ImageView
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="20dp"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+
+        android:layout_marginRight="10dp"
         android:id="@+id/iv_cinema_header_search"
-        android:src="@drawable/search"/>
+        android:scaleType="fitCenter"
+        android:src="@drawable/search"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

@@ -39,6 +39,7 @@ public class TicketRecord extends AppCompatActivity {
     private int lastVisibleItem;
     private Handler handler;
     private int start;
+    private boolean isAll;
     private String userId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class TicketRecord extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 swipeRefreshLayout.setRefreshing(false);
                 if(msg.arg1 == MESSAGE_MORE){
+                    ticketRecordAdapter.setAll(isAll);
                     ticketRecordAdapter.add(ticketRecords);
                 }else {
                     setTicketRecords();
@@ -90,7 +92,8 @@ public class TicketRecord extends AppCompatActivity {
             public void run() {
                 //ticketRecords = Test.getTicketRecords(10);
                 ticketRecords = Connect.getTicketRecorder(userId,start+"");
-                start += 10;
+                if(ticketRecords.size()<10)isAll=true;
+                start += ticketRecords.size();
                 handler.sendMessage(new Message());
             }
         }.start();
@@ -101,8 +104,10 @@ public class TicketRecord extends AppCompatActivity {
             @Override
             public void run() {
              //   ticketRecords = Test.getTicketRecords(lastVisibleItem);
+                if(isAll) return;
                 ticketRecords = Connect.getTicketRecorder(userId,start+"");
-                start += 10;
+                if(ticketRecords.size()<10)isAll=true;
+                start += ticketRecords.size();
                 Message message = new Message();
                 message.arg1 = MESSAGE_MORE;
                 handler.sendMessage(message);
@@ -112,6 +117,7 @@ public class TicketRecord extends AppCompatActivity {
     private void setTicketRecords(){
         ticketRecordAdapter = new TicketRecordAdapter
                 (TicketRecord.this,ticketRecords,itemClickListener);
+        ticketRecordAdapter.setAll(isAll);
         rvTicketRecord.setLayoutManager(linearLayoutManager);
         rvTicketRecord.setAdapter(ticketRecordAdapter);
     }
@@ -132,6 +138,7 @@ public class TicketRecord extends AppCompatActivity {
         @Override
         public void onRefresh() {
             start = 0;
+            isAll=false;
             loadTicketRecords();
         }
     };

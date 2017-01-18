@@ -47,6 +47,7 @@ public class FilmListFragment extends Fragment {
     private int type = FilmListAdapter.TYPE_NOWSHOWING;
     private String filmNameLike;
     private int start;
+    private boolean isAll;
 
     @Nullable
     @Override
@@ -103,19 +104,20 @@ public class FilmListFragment extends Fragment {
         }else {
             srlRefresh.setRefreshing(false);
         }
-        
+        isAll=false;
         return view;
     }
 
-    public void setFilmNameLike(String filmNameLike) {
+    public void setFilmNameLike(final String filmNameLike) {
         start=0;
         this.filmNameLike = filmNameLike;
         new Thread(){
             @Override
             public void run() {
                 //filmLists = Test.getFilmList();
-                    filmLists = Connect.getNowShowingData_FilmList(start+"");
-                start += 10;
+                filmLists = Connect.getSearchFilm(filmNameLike,start+"");
+                if(filmLists.size()<10)isAll=true;
+                start += filmLists.size();
                 Message message = new Message();
                 message.arg1 = SEARCH_LOAD;
                 handler.sendMessage(message);
@@ -126,6 +128,7 @@ public class FilmListFragment extends Fragment {
     private void setSearchFilmListDatas(){
         filmListAdapter = new FilmListAdapter(getActivity(),filmLists,listener,
                 FilmListAdapter.TYPE_UPCOMING);
+        filmListAdapter.setIsAll(isAll);
         rvList.setLayoutManager(linearLayoutManager);
         rvList.setAdapter(filmListAdapter);
         rvList.setItemAnimator(new DefaultItemAnimator());
@@ -154,6 +157,7 @@ public class FilmListFragment extends Fragment {
         public void onRefresh() {
             if (type != FilmListAdapter.TYPE_SEARCH) {
                 start = 0;
+                isAll=false;
                 loadFilmListDatas();
             }else {
                 srlRefresh.setRefreshing(false);
@@ -165,14 +169,16 @@ public class FilmListFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-                if(type == FilmListAdapter.TYPE_NOWSHOWING) {
+                if(isAll)return;
+                    if(type == FilmListAdapter.TYPE_NOWSHOWING) {
                     filmLists = Connect.getNowShowingData_FilmList(start+"");
                 }else if(type == FilmListAdapter.TYPE_UPCOMING){
                     filmLists = Connect.getUpcomingData_FilmList(start+"");
                 }else {
                     filmLists = Connect.getNowShowingData_FilmList(start+"");
                 }
-                start += 10;
+                if(filmLists.size()<10)isAll=true;
+                start += filmLists.size();
                 Message message = new Message();
                 message.arg1 = LOAD_MORE;
                 handler.sendMessage(message);
@@ -181,9 +187,11 @@ public class FilmListFragment extends Fragment {
     }
 
     private void setMore(){
+        filmListAdapter.setIsAll(isAll);
         for(FilmList filmList:filmLists){
             filmListAdapter.add(filmList);
         }
+
     }
 
     private void loadFilmListDatas(){
@@ -193,12 +201,15 @@ public class FilmListFragment extends Fragment {
                 //filmLists = Test.getFilmList();
                 if(type == FilmListAdapter.TYPE_NOWSHOWING) {
                     filmLists = Connect.getNowShowingData_FilmList(start+"");
+                    // filmLists=Test.getNowShowingFilmList();
                 }else if(type == FilmListAdapter.TYPE_UPCOMING){
                     filmLists = Connect.getUpcomingData_FilmList(start+"");
+                    // filmLists = Test.getUpcomingFilmList();
                 }else {
 
                 }
-                start += 10;
+                if(filmLists.size()<10)isAll=true;
+                start += filmLists.size();
                 Message message = new Message();
                 message.arg1 = FIRST_LOAD;
                 handler.sendMessage(message);
@@ -209,6 +220,7 @@ public class FilmListFragment extends Fragment {
     private void setFilmListDatas(){
         filmListAdapter = new FilmListAdapter(getActivity(),filmLists,listener,
                 type);
+        filmListAdapter.setIsAll(isAll);
         rvList.setLayoutManager(linearLayoutManager);
         rvList.setAdapter(filmListAdapter);
         rvList.setItemAnimator(new DefaultItemAnimator());

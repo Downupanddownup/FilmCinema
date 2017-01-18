@@ -80,6 +80,8 @@ public class SessionFragment extends Fragment {
 
     private void createTabs(){
         llTabs.removeAllViews();
+        if(dates==null)return;
+        if(dates.size()==0)return;
         for(int i=0;i<dates.size();++i) {
             final TextView textView = new TextView(getActivity());
             WindowManager manager = getActivity().getWindowManager();
@@ -97,10 +99,10 @@ public class SessionFragment extends Fragment {
                         if(textView!= v){
                             textView.setBackgroundColor(Color.TRANSPARENT);
                         }else {
-                            textView.setBackgroundColor(getResources().getColor(R.color.colorYellow));
+                            textView.setBackgroundColor(getResources().getColor(R.color.ButtomGuidBar));
 
                             thisSessions = getThisSessions(dates.get(i).getDate());
-                            sessionAdapter.replaceSessions(thisSessions);
+                            sessionAdapter.replaceSessions(thisSessions,dates.get(i).getDate());
                             rvSessions.setAdapter(sessionAdapter);
                         }
                     }
@@ -114,7 +116,7 @@ public class SessionFragment extends Fragment {
         new Thread(){
             @Override
             public void run() {
-               // sessions = Test.getSessions(filmId,cinemaId);
+                // sessions = Test.getSessions(filmId,cinemaId);
                 sessions = Connect.getSession_CinemaDetail(cinemaId,filmId);
 
                 handler.sendMessage(new Message());
@@ -127,7 +129,8 @@ public class SessionFragment extends Fragment {
         createTabs();
         rvSessions.setLayoutManager(new LinearLayoutManager(getActivity()));
         thisSessions = getThisSessions(dates.get(0).getDate());
-        sessionAdapter = new SessionAdapter(getActivity(),thisSessions,cinemaId);
+        llTabs.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.ButtomGuidBar));
+        sessionAdapter = new SessionAdapter(getActivity(),thisSessions,cinemaId,dates.get(0).getDate());
         rvSessions.setAdapter(sessionAdapter);
         rvSessions.setItemAnimator(new DefaultItemAnimator());
     }
@@ -137,6 +140,7 @@ public class SessionFragment extends Fragment {
         if(sessions == null){
             return  null;
         }
+        if (sessions.size()<1)return null;
         String date = sessions.get(0).getDate();
         dates.add(new Date(date));
         for(int i=1;i<sessions.size();++i){
@@ -180,7 +184,8 @@ public class SessionFragment extends Fragment {
         public String getShowDate() {
             String date = "";
             for(int i=0;i<this.date.length();++i){
-                if(i>4){
+                if(i>3){
+                    if(i==6)date+=".";
                     date += this.date.charAt(i);
                 }
             }

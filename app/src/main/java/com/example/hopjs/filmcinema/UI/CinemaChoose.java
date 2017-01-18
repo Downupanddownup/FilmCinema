@@ -2,6 +2,8 @@ package com.example.hopjs.filmcinema.UI;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,7 @@ import com.example.hopjs.filmcinema.Common.Transform;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 import com.example.hopjs.filmcinema.UI.Fragment.CinemaListFragment;
+import com.example.hopjs.filmcinema.UI.Fragment.SidebarFragment;
 
 /**
  * Created by Hopjs on 2016/10/19.
@@ -28,7 +31,7 @@ public class CinemaChoose extends AppCompatActivity {
     private final int ALLCITY = 1;
     private final int NEARBY = 2;
 
-    private ImageView ivCiyt,ivSearch;
+    private ImageView ivCiyt,ivReturn;
     private ViewPager vpCinemas;
     private ImageView ivBar;
     private TextView tvCity;
@@ -48,18 +51,19 @@ public class CinemaChoose extends AppCompatActivity {
         ivBar = (ImageView)findViewById(R.id.iv_background);
         tvTabOne = (TextView)findViewById(R.id.tv_now0showing);
         tvTabTwo = (TextView)findViewById(R.id.tv_upcoming);
-        ivCiyt = (ImageView)findViewById(R.id.iv_cinema_header_choose);
-        ivSearch = (ImageView)findViewById(R.id.iv_cinema_header_search);
-        tvCity = (TextView)findViewById(R.id.tv_cinema_header_city);
+        ivCiyt = (ImageView)findViewById(R.id.iv_cinema0choose_choose);
+        ivReturn = (ImageView)findViewById(R.id.iv_cinema0choose_return);
+        tvCity = (TextView)findViewById(R.id.tv_cinema0choose_city);
 
         tvTabOne.setText(" 全城 ");
         tvTabTwo.setText(" 附近 ");
 
         ivCiyt.setOnClickListener(listener);
-        ivSearch.setOnClickListener(searchListener);
+        ivReturn.setOnClickListener(searchListener);
 
-        tvTabOne.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        tvTabOne.setBackgroundColor(getResources().getColor(R.color.ButtomGuidBar));
 
+        ivReturn.setImageResource(R.drawable.return0arrow);
         filmId = getIntent().getStringExtra("filmId");
         CinemaListFragment allCity = new CinemaListFragment();
         CinemaListFragment nearby = new CinemaListFragment();
@@ -113,14 +117,14 @@ public class CinemaChoose extends AppCompatActivity {
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Test.showToast(getApplicationContext(),"你点击了城市按钮");
+            Transform.toCityChoose(CinemaChoose.this);
         }
     };
 
     private View.OnClickListener searchListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Transform.toSearch(CinemaChoose.this);
+            finish();
         }
     };
 

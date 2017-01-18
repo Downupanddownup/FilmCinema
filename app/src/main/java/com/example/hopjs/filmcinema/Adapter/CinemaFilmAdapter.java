@@ -35,10 +35,10 @@ public class CinemaFilmAdapter extends RecyclerView.Adapter<CinemaFilmAdapter.Vi
 
         public ViewHolder(View itemView,int viewType,OnItemClickListener itemClickListener) {
             super(itemView);
-            ivPoster = (ImageView)itemView.findViewById(R.id.iv_cdetail_film_item);
             this.itemClickListener = itemClickListener;
             if(viewType == TYPE_NORMAL){
                 itemView.setOnClickListener(this);
+                ivPoster = (ImageView)itemView.findViewById(R.id.iv_cdetail_film_item);
             }
         }
     }
@@ -63,7 +63,6 @@ public class CinemaFilmAdapter extends RecyclerView.Adapter<CinemaFilmAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         Log.e("cinemafilmadapter","postion:"+position+",getItemCount:"+getItemCount());
         if(position==0 || position == getItemCount()-1){
-            holder.ivPoster.setImageBitmap(null);
         }else {
             holder.index = position;
             holder.id = films.get(position-1).getId();
@@ -72,11 +71,10 @@ public class CinemaFilmAdapter extends RecyclerView.Adapter<CinemaFilmAdapter.Vi
             holder.ivPoster.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("posterName",films.get(position-1).getPosterName());
+            temUrl.addHeader("posterName","Posters/"+films.get(position-1).getPosterName());
             Glide.with(context)
                     .load(temUrl.getSurl())
-                    .placeholder(R.drawable.x)
-                    .error(R.drawable.w)
+                    .error(R.drawable.white)
                     .into(holder.ivPoster);
         }
     }
@@ -97,8 +95,14 @@ public class CinemaFilmAdapter extends RecyclerView.Adapter<CinemaFilmAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate
+        View view;
+        if(viewType==TYPE_NORMAL){
+        view = LayoutInflater.from(context).inflate
                 (R.layout.cdetail_film_item,parent,false);
+        }else {
+            view = LayoutInflater.from(context).inflate
+                    (R.layout.cdetail_film_emptyitem,parent,false);
+        }
         ViewHolder viewHolder = new ViewHolder(view,viewType,itemClickListener);
         return viewHolder;
     }

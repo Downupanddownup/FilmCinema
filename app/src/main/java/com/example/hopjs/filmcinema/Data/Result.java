@@ -12,6 +12,8 @@ public class Result {
     public static final int RESULT_EXIT_PHONE = 5;
     public static final int RESULT_TICKET_BOUGHT = 6;
     public static final int RESULT_EXIT_NAME = 7;
+    public static final int RESULT_NOT_NETWORK = 8;
+    public static final int RESULT_TICKET_OUTDATE = 9;
     private int code;
 
     public int getCode() {

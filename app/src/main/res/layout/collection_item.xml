@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="210dp"
+    android:layout_height="160dp"
     android:orientation="vertical">
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
-                android:layout_width="160dp"
+            <android.support.v7.widget.CardView
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:id="@+id/iv_collection_poster"
-                android:scaleType="fitXY"/>
+                android:id="@+id/cv_collection_item_cv"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="5dp">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/iv_collection_poster"
+                    android:scaleType="fitXY"/>
+            </android.support.v7.widget.CardView>
+
 
             <TextView
                 android:text="电影"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/iv_collection_poster"
+                android:layout_toEndOf="@+id/cv_collection_item_cv"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
-                android:textSize="25dp"
+                android:layout_marginTop="10dp"
+                android:textSize="20dp"
                 android:id="@+id/tv_collection_name" />
 
             <TextView
                 android:text="8.9"
-                android:textSize="55dp"
+                android:textSize="30dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/tv_collection_name"
@@ -44,18 +54,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_collection_name"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:layout_alignStart="@+id/tv_collection_name"
                 android:id="@+id/tv_collection_type" />
 
             <TextView
                 android:text="导演：卡梅隆"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_collection_type"
                 android:layout_alignStart="@+id/tv_collection_type"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:id="@+id/tv_collection_director" />
 
             <TextView
@@ -64,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_collection_director"
                 android:layout_alignStart="@+id/tv_collection_director"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/tv_collection_time" />
 
         </RelativeLayout>

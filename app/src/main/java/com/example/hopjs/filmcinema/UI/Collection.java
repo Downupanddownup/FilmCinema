@@ -39,6 +39,7 @@ public class Collection extends AppCompatActivity {
     private int lastVisibleItem;
     private Handler handler;
     private int start;
+    private boolean isAll;
     private String userId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class Collection extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 swipeRefreshLayout.setRefreshing(false);
                 if(msg.arg1 == MESSAGE_MORE){
+                    collectionAdapter.setAll(isAll);
                     collectionAdapter.add(collections);
                 }else {
                     setCollections();
@@ -69,6 +71,7 @@ public class Collection extends AppCompatActivity {
         ivReturn.setOnClickListener(clickListener);
         ivSearch.setOnClickListener(clickListener);
         start = 0;
+        isAll = false;
         userId = ((MyApplication)getApplicationContext()).userAccount.getUserId();
         loadCollections();
     }
@@ -90,7 +93,8 @@ public class Collection extends AppCompatActivity {
             public void run() {
                // collections = Test.getCollections(10);
                 collections = Connect.getCollection(userId,start+"");
-                start += 10;
+                if(collections.size()<10)isAll=true;
+                start += collections.size();
                 handler.sendMessage(new Message());
             }
         }.start();
@@ -101,8 +105,10 @@ public class Collection extends AppCompatActivity {
             @Override
             public void run() {
                 //collections = Test.getCollections(lastVisibleItem);
+                if(isAll) return;
                 collections = Connect.getCollection(userId,start+"");
-                start += 10;
+                if(collections.size()<10)isAll=true;
+                start += collections.size();
                 Message message = new Message();
                 message.arg1 = MESSAGE_MORE;
                 handler.sendMessage(message);
@@ -112,6 +118,7 @@ public class Collection extends AppCompatActivity {
     private void setCollections(){
         collectionAdapter = new CollectionAdapter
                 (Collection.this,collections,itemClickListener);
+        collectionAdapter.setAll(isAll);
         rvCollection.setLayoutManager(linearLayoutManager);
         rvCollection.setAdapter(collectionAdapter);
     }
@@ -132,6 +139,7 @@ public class Collection extends AppCompatActivity {
         @Override
         public void onRefresh() {
             start = 0;
+            isAll=false;
             loadCollections();
         }
     };

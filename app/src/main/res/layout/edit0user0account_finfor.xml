@@ -53,7 +53,7 @@
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="120dp"
         android:orientation="horizontal"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
@@ -65,12 +65,12 @@
             app:cardCornerRadius="5dp"
             android:elevation="5dp"
             android:layout_marginLeft="50dp"
-            android:layout_marginTop="50dp">
+            android:layout_marginTop="10dp">
 
             <ImageView
                 android:id="@+id/iv_edit0user0account_finfor_portrait"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:scaleType="fitXY" />
         </android.support.v7.widget.CardView>
         <Button

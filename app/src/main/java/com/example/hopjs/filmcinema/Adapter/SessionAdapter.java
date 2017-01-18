@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.hopjs.filmcinema.Common.ShowTool;
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.Data.TicketInformation;
+import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
 import com.example.hopjs.filmcinema.UI.CinemaDetail;
@@ -32,7 +35,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHodl
         public TextView tvVideoHallNum;
         public Button btBuy;
 
-        public ViewHodler(View itemView, final Activity activity,final String cinemaId) {
+        public ViewHodler(View itemView, final Activity activity, final String cinemaId, final Context context, final String date) {
             super(itemView);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_session_price);
             tvVideoHallNum = (TextView) itemView.findViewById(R.id.tv_session_videonum);
@@ -43,7 +46,11 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHodl
             btBuy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Transform.toSeatChoose(activity,cinemaId,filmId,sessionId);
+                    TicketInformation ticketInformation=((MyApplication)context).ticketInformation;
+                    ticketInformation.setVideoHallNum(tvVideoHallNum.getText().toString());
+                    ticketInformation.setDate(date);
+                    ticketInformation.setTime(tvTime.getText().toString());
+                    Transform.toSeatChoose(activity,cinemaId,filmId,sessionId,tvPrice.getText().toString());
                 }
             });
         }
@@ -55,16 +62,19 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHodl
     private Context context;
     private Activity activity;
     private String cinemaId;
+    private String date;
 
-    public SessionAdapter(Activity activity,ArrayList<CinemaDetail.Session> sessions,String cinemaId) {
+    public SessionAdapter(Activity activity,ArrayList<CinemaDetail.Session> sessions,String cinemaId,String date) {
         super();
         this.context = activity.getApplicationContext();
         this.activity = activity;
         this.sessions = sessions;
         this.cinemaId = cinemaId;
+        this.date=date;
     }
 
-    public void replaceSessions(ArrayList<CinemaDetail.Session> sessions){
+    public void replaceSessions(ArrayList<CinemaDetail.Session> sessions,String date){
+        this.date=date;
         for(int i=this.sessions.size()-1;i>-1;--i){
             this.sessions.remove(i);
             notifyItemRemoved(i);
@@ -81,8 +91,10 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHodl
         holder.sessionId = sessions.get(position).getSessionId();
         holder.filmId = sessions.get(position).getFilmId();
         holder.tvPrice.setText(sessions.get(position).getPrice());
-        holder.tvTime.setText(sessions.get(position).getTime());
-        holder.tvVideoHallNum.setText(sessions.get(position).getVideoHallNum());
+        String tem = ShowTool.sessionStartTime(sessions.get(position).getTime());
+        holder.tvTime.setText(tem);
+        tem=sessions.get(position).getVideoHallNum()+"号放映厅";
+        holder.tvVideoHallNum.setText(tem);
     }
 
     @Override
@@ -93,7 +105,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHodl
     @Override
     public ViewHodler onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.session,parent,false);
-        ViewHodler viewHodler = new ViewHodler(view,activity,cinemaId);
+        ViewHodler viewHodler = new ViewHodler(view,activity,cinemaId,context,date);
         return viewHodler;
     }
 }

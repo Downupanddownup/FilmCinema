@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.hopjs.filmcinema.Adapter.FilmListAdapter;
@@ -36,6 +37,7 @@ public class FilmFragment extends Fragment {
     private TextView tvNowShowing;
     private TextView tvUpcoming;
     private FragmentPagerAdapter fragmentPagerAdapter;
+    private RelativeLayout relativeLayout;
 
     private boolean first = true;
     private int currentS = NOWSHOWING;
@@ -51,12 +53,15 @@ public class FilmFragment extends Fragment {
         tvUpcoming = (TextView)view.findViewById(R.id.tv_upcoming);
         ivReturn = (ImageView)view.findViewById(R.id.iv_film_header_return);
         ivSearch = (ImageView)view.findViewById(R.id.iv_film_header_search);
+        relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_film_header_body);
 
-        ivReturn.setOnClickListener(returnListener);
+        ivReturn.setVisibility(View.INVISIBLE);
         ivSearch.setOnClickListener(searchListener);
 
-        tvNowShowing.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        tvNowShowing.setBackgroundColor(getResources().getColor(R.color.ButtomGuidBar));
 
+        /*relativeLayout.setBackgroundColor(
+                getResources().getColor(R.color.colorAccent));*/
         FilmListFragment nowShowing = new FilmListFragment();
         FilmListFragment upcoming = new FilmListFragment();
         Bundle bundle = new Bundle();
@@ -107,13 +112,6 @@ public class FilmFragment extends Fragment {
 
         return view;
     }
-
-    private View.OnClickListener returnListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Test.showToast(getActivity().getApplicationContext(),"你点击了返回按钮");
-        }
-    };
 
     private View.OnClickListener searchListener = new View.OnClickListener() {
         @Override

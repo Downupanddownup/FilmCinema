@@ -157,26 +157,24 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.ViewHold
             holder.ivPortrait.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
-            temUrl.addHeader("portraitName",director.getportraitName());
+            temUrl.addHeader("portraitName","Directors/"+director.getportraitName());
             Glide.with(context)
                     .load(temUrl.getSurl())
-                    .placeholder(R.drawable.x)
-                    .error(R.drawable.w)
+                    .error(R.drawable.directoractorportrait)
                     .into(holder.ivPortrait);
         }else if(position < getItemCount()-1){
             holder.id = actors.get(position-1).getId();
             holder.tvName.setText(actors.get(position-1).getName());
-            holder.tvRoleorD.setText(actors.get(position-1).getRole());
+            holder.tvRoleorD.setText("饰 "+actors.get(position-1).getRole());
             /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(actors.get(position-1).getPortraitId(),context,0.05);
             holder.ivPortrait.setImageBitmap(bitmap);*/
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
-            temUrl.addHeader("portraitName",actors.get(position-1).getPortraitName());
+            temUrl.addHeader("portraitName","Actors/"+actors.get(position-1).getPortraitName());
             Glide.with(context)
                     .load(temUrl.getSurl())
-                    .placeholder(R.drawable.x)
-                    .error(R.drawable.w)
+                    .error(R.drawable.directoractorportrait)
                     .into(holder.ivPortrait);
         }
     }

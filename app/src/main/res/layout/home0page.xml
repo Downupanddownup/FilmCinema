@@ -22,6 +22,9 @@
                 android:id="@+id/f_home0page_big0poster"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"/>
             <include layout="@layout/home0page_search"/>
             <View
                 android:layout_width="match_parent"

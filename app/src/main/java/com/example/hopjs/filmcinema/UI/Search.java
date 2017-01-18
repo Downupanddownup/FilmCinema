@@ -87,7 +87,7 @@ public class Search extends AppCompatActivity {
         vpList.setAdapter(searchPagerAdapter);
         vpList.setOnPageChangeListener(pageChangeListener);
 
-        tvFilm.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        tvFilm.setBackgroundColor(getResources().getColor(R.color.ButtomGuidBar));
         tvCinema.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

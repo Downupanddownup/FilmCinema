@@ -19,6 +19,12 @@ public class UserAccount {
     public UserAccount() {
         setportrait = false;
         login = false;
+        portraitName="";
+        name="";
+        userId="";
+        sex="";
+        bphone="";
+        pwd="";
     }
 
     public String getUserId() {

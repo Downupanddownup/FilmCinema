@@ -10,13 +10,18 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hopjs.filmcinema.Adapter.CinemaFilmAdapter;
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.Data.TicketInformation;
+import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
 import com.example.hopjs.filmcinema.Test.Test;
@@ -34,11 +39,12 @@ public class CinemaDetail extends AppCompatActivity {
    * 场次次数不同导致跳转时页面跳动，非常影响体验*/
     private ImageView ivReturn,ivSearch;
     private TextView tvTitle;
-    private TextView tvCinemaName,tvPhone,tvAddress;
+    public TextView tvCinemaName,tvPhone,tvAddress;
     private RecyclerView rvFilms;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-    private TextView tvFilmName;
+    public TextView tvFilmName;
     private RatingBar rbScord;
+    private RelativeLayout relativeLayout;
     private SessionFragment sfSessions;
     private String cinemaId;
     private CinemaDetail.Cinema cinema;
@@ -60,11 +66,12 @@ public class CinemaDetail extends AppCompatActivity {
         rvFilms = (RecyclerView) findViewById(R.id.rv_cdetail_film_f);
         tvFilmName = (TextView) findViewById(R.id.tv_cdetail_film_name);
         rbScord = (RatingBar)findViewById(R.id.rb_cdetail_film_scord);
+        relativeLayout=(RelativeLayout)findViewById(R.id.rl_header_body);
         sfSessions = (SessionFragment)getSupportFragmentManager().
                 findFragmentById(R.id.f_cdetail_sessions);
 
         LayerDrawable ldStars = (LayerDrawable)rbScord.getProgressDrawable();
-        ldStars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+      //  ldStars.getDrawable(2).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
 
 
         tvTitle.setText("影 院 详 情");
@@ -72,6 +79,7 @@ public class CinemaDetail extends AppCompatActivity {
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
+               // Toast.makeText(CinemaDetail.this,"3",Toast.LENGTH_SHORT).show();
                 setData();
             }
         };
@@ -80,7 +88,13 @@ public class CinemaDetail extends AppCompatActivity {
 
         ivSearch.setOnClickListener(listener);
         ivReturn.setOnClickListener(listener);
-
+        relativeLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        relativeLayout.getBackground().setAlpha(180);
         loadData();
 
     }
@@ -88,11 +102,11 @@ public class CinemaDetail extends AppCompatActivity {
         new Thread(){
             @Override
             public void run() {
-                //films = Test.getFilms(cinemaId);
+                 // films = Test.getFilms(cinemaId);
                 films = Connect.getFilm_CinemaDetail(cinemaId);
                 //cinema = Test.getCinema(cinemaId);
                 cinema = Connect.getFinfor_CinemaDetail(cinemaId);
-                handler.sendMessage(new Message());
+                 handler.sendMessage(new Message());
             }
         }.start();
     }
@@ -102,14 +116,22 @@ public class CinemaDetail extends AppCompatActivity {
         tvAddress.setText(cinema.getAddress());
         tvPhone.setText(cinema.getPhone());
 
+        TicketInformation ticketInformation=((MyApplication)getApplicationContext()).ticketInformation;
+        ticketInformation.setCinemaId(cinemaId);
+        ticketInformation.setCinemaName(cinema.getName());
+
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL);
         rvFilms.setLayoutManager(staggeredGridLayoutManager);
         cinemaFilmAdapter = new CinemaFilmAdapter(this,films,itemClickListener);
         rvFilms.setAdapter(cinemaFilmAdapter);
 
         if(films.size()>0) {
+            ticketInformation.setFilmName(films.get(0).getName());
+            tvFilmName.setText(films.get(0).getName());
+            rbScord.setRating(films.get(0).getScord()/2f);
             sfSessions.setCinemaId(cinemaId);
             sfSessions.changeFilm(films.get(0).getId());
+
         }
 
     }
@@ -132,8 +154,11 @@ public class CinemaDetail extends AppCompatActivity {
         public void onItemClick(View view, String id,int index) {
             CinemaDetail.Film film = getFilm(id);
             if(film != null){
+                TicketInformation ticketInformation=((MyApplication)getApplicationContext()).ticketInformation;
+                ticketInformation.setFilmName(film.getName());
+                ticketInformation.setFilmId(film.getId());
                 tvFilmName.setText(film.getName());
-                rbScord.setRating(film.getScord());
+                rbScord.setRating(film.getScord()/2f);
                 sfSessions.changeFilm(id);
             }
 

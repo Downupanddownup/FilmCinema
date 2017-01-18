@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.hopjs.filmcinema.Common.Transform;
@@ -38,6 +41,10 @@ import static android.app.Activity.RESULT_OK;
 
 public class PcenterFragment extends Fragment {
 
+    public static final int MESSAGE_LOGIN=1;
+    public static final int MESSAGE_FINFFIX=2;
+    public static final int MESSAGE_PHONEFIX=3;
+
     private final String IMAGE_TYPE = "image/*";
     private final int IMAGE_CODE = 1;   //这里的IMAGE_CODE是自己任意定义的
     private Bitmap picture;
@@ -51,6 +58,38 @@ public class PcenterFragment extends Fragment {
     private UserAccount userAccount;
     private EditUserAccount editUserAccount;
     private Login login;
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.arg1){
+                case MESSAGE_LOGIN:
+                    loadUserData();
+                    switch (msg.arg2){
+                        case Login.NETWORK_ERRO:
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "登录失败，请检查您的网络",Toast.LENGTH_SHORT).show();
+                            break;
+                        case Login.SUCCESS:
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "登录成功",Toast.LENGTH_SHORT).show();
+                            ivSex.setVisibility(View.VISIBLE);
+                            break;
+                        case Login.UNSUCCESS:
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "登录失败，账号有误",Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                    break;
+                case MESSAGE_FINFFIX:
+                    loadUserData();
+                    break;
+                case MESSAGE_PHONEFIX:
+                    tvPorT.setText((String)msg.obj);
+                    break;
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -60,8 +99,8 @@ public class PcenterFragment extends Fragment {
         setListener();
         loadUserData();
         ivReturn.setVisibility(View.INVISIBLE);
-        editUserAccount = new EditUserAccount(getActivity(),this);
-        login = new Login(getActivity(),getActivity());
+
+        login = new Login(getActivity(),handler,MESSAGE_LOGIN);
         return  view;
     }
 
@@ -90,6 +129,7 @@ public class PcenterFragment extends Fragment {
         cvCritic.setOnClickListener(listener);
         cvPwd.setOnClickListener(listener);
         btLoginout.setOnClickListener(listener);
+        ivPortrait.setOnClickListener(listener);
     }
     private void loadUserData(){
         userAccount = ((MyApplication)getActivity().getApplicationContext()).userAccount;
@@ -101,39 +141,29 @@ public class PcenterFragment extends Fragment {
             }else {
                 ivSex.setImageResource(R.drawable.woman);
             }
-            if(userAccount.isSetportrait()){
-               /* bitmap = ((MyApplication)getActivity().getApplicationContext()).bitmapCache.
-                        getBitmap(userAccount.getPortraitId(),getActivity().getApplicationContext(),0.1);
-                ivPortrait.setImageBitmap(bitmap);*/
                 Connect.TemUrl temUrl = new Connect.TemUrl();
-                temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-                temUrl.addHeader("portraitName",userAccount.getPortraitName());
+                temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
+                temUrl.addHeader("portraitName","Portraits/"+userAccount.getPortraitName());
                 Glide.with(this)
                         .load(temUrl.getSurl())
-                        .placeholder(R.drawable.x)
-                        .error(R.drawable.w)
+                        .error(R.drawable.userportrait)
                         .into(ivPortrait);
-            }else {
-                /*bitmap = ((MyApplication)getActivity().getApplicationContext()).bitmapCache.
-                        getBitmap(R.drawable.defaultportrait,getActivity().getApplicationContext(),0.1);
-                ivPortrait.setImageBitmap(bitmap);*/
-                Glide.with(this)
-                        .load(R.drawable.defaultportrait)
-                        .into(ivPortrait);
-            }
             btLoginout.setText("登  出");
         }else {
             tvName.setText("");
             ivSex.setVisibility(View.INVISIBLE);
             tvPorT.setText("请 登 录");
-            /*bitmap = ((MyApplication)getActivity().getApplicationContext()).bitmapCache.
-                    getBitmap(R.drawable.smile,getActivity().getApplicationContext(),0.1);
-            ivPortrait.setImageBitmap(bitmap);*/
             Glide.with(this)
-                    .load(R.drawable.smile)
+                    .load(R.drawable.userportrait)
                     .into(ivPortrait);
             btLoginout.setText("登  录");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserData();
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
@@ -144,33 +174,67 @@ public class PcenterFragment extends Fragment {
                     Transform.toSearch(getActivity());
                     break;
                 case R.id.cv_pcenter_activity_order:
-                    Transform.toTicketRecord(getActivity());
+                    if(userAccount.isLogin()){
+                        Transform.toTicketRecord(getActivity());
+                    }else {
+                        Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.cv_pcenter_activity_critic:
-                    Transform.toMyCritic(getActivity());
+                    if(userAccount.isLogin()){
+                        Transform.toMyCritic(getActivity());
+                    }else {
+                        Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.cv_pcenter_activity_collection:
-                    Transform.toCollection(getActivity());
+                    if(userAccount.isLogin()){
+                        Transform.toCollection(getActivity());
+                    }else {
+                        Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.cv_pcenter_information_account:
-                    Test.showToast(getContext(),"账号编辑");
-                    editUserAccount.editFinfor();
+                    if(userAccount.isLogin()){
+                        editUserAccount = new EditUserAccount(getActivity(),
+                                PcenterFragment.this,handler,MESSAGE_FINFFIX);
+                        editUserAccount.editFinfor();
+
+                    }else {
+                        Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.cv_pcenter_information_pwd:
-                    Test.showToast(getContext(),"修改密码");
-                    editUserAccount.changPsw();
+                    if(userAccount.isLogin()){
+                        editUserAccount = new EditUserAccount(getActivity(),
+                            PcenterFragment.this,null,0);
+                        editUserAccount.changPsw();
+                    }else {
+                        Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.cv_pcenter_information_bphone:
-                    Test.showToast(getContext(),"修改绑定手机号");
-                    editUserAccount.changePhone();
+                    if(userAccount.isLogin()){
+                        editUserAccount = new EditUserAccount(getActivity(),
+                                PcenterFragment.this,handler,MESSAGE_PHONEFIX);
+                        editUserAccount.changePhone();
+                    }else {
+                        Toast.makeText(getActivity(),"请登录",Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.bt_pcenter_loginout:
-                    Test.showToast(getContext(),"推出登录");
                     if(userAccount.isLogin()){
+                        Test.showToast(getContext(),"您已退出登录");
                         btLoginout.setText("登 录");
                         userAccount.setLogin(false);
                         ((MyApplication)getActivity().getApplicationContext()).userAccount.setLogin(false);
+                        loadUserData();
                     }else {
+                        login.show();
+                    }
+                    break;
+                case R.id.iv_pcenter_portrait:
+                    if(!userAccount.isLogin()){
                         login.show();
                     }
                     break;

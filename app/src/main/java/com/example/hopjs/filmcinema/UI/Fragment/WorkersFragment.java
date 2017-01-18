@@ -40,6 +40,7 @@ public class WorkersFragment extends Fragment {
     private Handler handler;
     private ExpandableTextView expandableTextView;
     private int start;
+    private String plot;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,6 +81,7 @@ public class WorkersFragment extends Fragment {
     };
 
     private void setDandA(){
+        expandableTextView.setText(plot);
         workersAdapter = new WorkersAdapter(getActivity().getApplicationContext(),director,actors,listener);
         linearLayoutManager = new LinearLayoutManager
                 (getActivity().getApplicationContext(),LinearLayoutManager.HORIZONTAL,false);
@@ -112,10 +114,13 @@ public class WorkersFragment extends Fragment {
                 Log.e("ooooooooooooooo","WorkersFragment:loadDAandPlot,filmId:"+filmId);
              //   while (!getFilmId);
                 //expandableTextView.setText(Test.getPlot());
-                expandableTextView.setText(Connect.getPlot(filmId));
+                plot=Connect.getPlot(filmId);
+
+                // expandableTextView.setText(Test.getNidemingziPlot());
                 //director = Test.getDirector();
                 director = Connect.getDirector_FilmDeatil(filmId);
-               // actors = Test.getActors();
+                // director = Test.getDirector();
+                // actors = Test.getActors();
                 actors = Connect.getActors_FilmDeatail(filmId,start+"");
                 start += 10;
                 handler.sendMessage(message);

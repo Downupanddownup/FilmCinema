@@ -52,7 +52,7 @@ public class City extends AppCompatActivity {
         tvConfirm.setOnClickListener(listener);
 
         city = new RvCityAdapter.City();
-        loadCityData();
+
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -60,6 +60,7 @@ public class City extends AppCompatActivity {
                 setCityData();
             }
         };
+        loadCityData();
 
     }
     private void setCityData(){

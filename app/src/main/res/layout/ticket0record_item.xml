@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="10dp">
+    android:orientation="vertical">
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,23 +22,22 @@
             android:text="电影名称：皮诺擦的冒险故事"
             android:gravity="center"
             android:textSize="20dp"/>
-        <RelativeLayout
+
+        <TextView
+            android:id="@+id/tv_ticket0record_item_cinema0name"
             android:layout_width="match_parent"
-            android:layout_height="25dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/tv_ticket0record_item_cinema0name"
-                android:text="影院名称"
-                android:textSize="20dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/tv_ticket0record_item_date"
-                android:text="2016.10.19"
-                android:textSize="20dp"
-                android:layout_alignParentRight="true"/>
-        </RelativeLayout>
+            android:layout_height="25dp"
+            android:text="影院名称"
+            android:gravity="center"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/tv_ticket0record_item_date"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:text="2016.10.19"
+            android:textSize="20dp"
+            android:gravity="center"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="25dp">
@@ -42,7 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/tv_ticket0record_item_video0hall"
-                android:text="2号厅" />
+                android:text="2号厅"
+                android:layout_marginLeft="105dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -51,24 +55,21 @@
                 android:layout_toEndOf="@+id/tv_ticket0record_item_video0hall"
                 android:layout_marginLeft="10dp"/>
         </RelativeLayout>
-        <RelativeLayout
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="25dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/tv_ticket0record_item_ticket0num"
-                android:text="票数：3张"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:id="@+id/tv_ticket0record_item_ticket"
-                android:textSize="20dp"
-                android:text="80号 67号 34号"
-                android:layout_toEndOf="@+id/tv_ticket0record_item_ticket0num"
-                android:layout_marginLeft="10dp"/>
-        </RelativeLayout>
+            android:layout_height="25dp"
+            android:id="@+id/tv_ticket0record_item_ticket0num"
+            android:text="票数：3张"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_ticket0record_item_ticket"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="80号 67号 34号"
+            android:textSize="12dp" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="25dp">
@@ -80,4 +81,8 @@
                 android:layout_alignParentRight="true"/>
         </RelativeLayout>
     </LinearLayout>
-</android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+</LinearLayout>

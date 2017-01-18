@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.hopjs.filmcinema.Common.ShowTool;
 import com.example.hopjs.filmcinema.Data.HomePageFilm;
 import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
@@ -50,6 +52,7 @@ public class HomePageFilmAdapter extends RecyclerView.Adapter<HomePageFilmAdapte
         TextView name;
         TextView scord;
         TextView date;
+        RatingBar rbStar;
         myItemClickListener listener;
 
         @Override
@@ -66,12 +69,14 @@ public class HomePageFilmAdapter extends RecyclerView.Adapter<HomePageFilmAdapte
                     poster = (ImageView)itemView.findViewById(R.id.iv_home0page_now0showing_poster);
                     name = (TextView)itemView.findViewById(R.id.tv_home0page_now0showing_name);
                     scord = (TextView)itemView.findViewById(R.id.tv_home0page_now0showing_scord);
+                    rbStar = (RatingBar)itemView.findViewById(R.id.rb_home0page_now0showing_item_star);
                     break;
                 case UPCOMING:
                     poster = (ImageView)itemView.findViewById(R.id.iv_home0page_upcoming_poster);
                     name = (TextView)itemView.findViewById(R.id.tv_home0page_upcoming_name);
                     scord = (TextView)itemView.findViewById(R.id.tv_home0page_upcoming_scord);
                     date = (TextView)itemView.findViewById(R.id.tv_home0page_upcoming_date);
+                    rbStar = (RatingBar)itemView.findViewById(R.id.rb_home0page_upcoming_item_star);
                     break;
                 default:
             }
@@ -81,7 +86,7 @@ public class HomePageFilmAdapter extends RecyclerView.Adapter<HomePageFilmAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         if(type == UPCOMING){
-            holder.date.setText(mDatas.get(position).getDate());
+            holder.date.setText(ShowTool.getUpcomingDate(mDatas.get(position).getDate()));
         }
        // holder.poster.setImageBitmap(mDatas.get(position).getPoster());
         /*Bitmap bitmap = ((MyApplication)context.getApplicationContext()).bitmapCache.
@@ -89,14 +94,14 @@ public class HomePageFilmAdapter extends RecyclerView.Adapter<HomePageFilmAdapte
         holder.poster.setImageBitmap(bitmap);*/
         Connect.TemUrl temUrl = new Connect.TemUrl();
         temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-        temUrl.addHeader("posterName",mDatas.get(position).getPosterName());
+        temUrl.addHeader("posterName","Posters/"+mDatas.get(position).getPosterName());
         Glide.with(context)
                 .load(temUrl.getSurl())
-                .placeholder(R.drawable.x)
-                .error(R.drawable.w)
+                .error(R.drawable.white)
                 .into(holder.poster);
         holder.name.setText(mDatas.get(position).getName());
         holder.scord.setText(mDatas.get(position).getScord());
+        holder.rbStar.setRating(Float.parseFloat(holder.scord.getText().toString())/2);
         holder.id = mDatas.get(position).getId();
     }
 

@@ -66,7 +66,7 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_dark_background"
+        android:background="@color/FilmDetailActorBackground"
         android:id="@+id/rv_film0detail_minfor_workers">
 
     </android.support.v7.widget.RecyclerView>

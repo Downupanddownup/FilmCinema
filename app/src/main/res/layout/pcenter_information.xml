@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:layout_width="wrap_content"
@@ -10,14 +12,13 @@
         android:text="个 人 资 料"
         android:textSize="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:textColor="@android:color/holo_orange_light" />
+        android:layout_marginTop="20dp" />
     <View
         android:layout_width="match_parent"
-        android:layout_height="5dp"
+        android:layout_height="2dp"
         android:id="@+id/v_pcenter_information_view"
         android:layout_below="@+id/tv_pcenter_information_title"
-        android:background="@color/background_tab_pressed"
+        android:background="@color/ButtomGuidBar"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,12 +30,12 @@
             android:layout_height="20dp"/>
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:id="@+id/cv_pcenter_information_account"
             android:clickable="true"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
-            app:cardBackgroundColor="@color/colorAccent">
+            app:cardBackgroundColor="@color/PcenterBar">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -76,12 +77,12 @@
             android:layout_height="30dp"/>
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:id="@+id/cv_pcenter_information_pwd"
             android:clickable="true"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
-            app:cardBackgroundColor="@color/colorAccent">
+            app:cardBackgroundColor="@color/PcenterBar">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -123,12 +124,12 @@
             android:layout_height="30dp"/>
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:id="@+id/cv_pcenter_information_bphone"
             android:clickable="true"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
-            app:cardBackgroundColor="@color/colorAccent">
+            app:cardBackgroundColor="@color/PcenterBar">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

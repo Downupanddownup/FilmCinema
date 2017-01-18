@@ -32,10 +32,11 @@ public class CriticsFragment extends Fragment {
 
     private RecyclerView rvCritics;
     private LinearLayoutManager linearLayoutManager;
-    private CriticAdapter criticAdapter;
+    public CriticAdapter criticAdapter;
     private ArrayList<CriticAdapter.Critic> critics;
     private Handler handler;
     private int start;
+    private boolean isAll=false;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class CriticsFragment extends Fragment {
                         setCritics();
                         break;
                     case MESSAGE_MORE:
+                        criticAdapter.setIsAll(isAll);
                         criticAdapter.add(critics);
                         break;
                 }
@@ -72,7 +74,8 @@ public class CriticsFragment extends Fragment {
             //    while (!getFilmId);
                 Log.e("ooooooooooooooo","CriticsFragment:loadCritics,filmId"+filmId);
                 critics = Connect.getCritic_FilmDeatil(filmId,start+"");
-                start += 5;
+                if(critics.size()<5)isAll=true;
+                start += critics.size();
                 Message message = new Message();
                 message.arg1 = MESSAGE_FIRST;
                 handler.sendMessage(message);
@@ -80,8 +83,10 @@ public class CriticsFragment extends Fragment {
         }.start();
     }
     private void setCritics(){
+
         criticAdapter = new CriticAdapter(getActivity().getApplicationContext(),
                 critics, itemClickListener,lastItemClickListener);
+        criticAdapter.setIsAll(isAll);
         rvCritics.setLayoutManager(linearLayoutManager);
         rvCritics.setAdapter(criticAdapter);
     }
@@ -93,8 +98,10 @@ public class CriticsFragment extends Fragment {
                 public void run() {
                    // critics = Test.getCritics(10);
               //      while (!getFilmId);
+                    if(isAll)return;
                     critics = Connect.getCritic_FilmDeatil(filmId,start+"");
-                    start += 5;
+                    start += critics.size();
+                    if(critics.size()<5)isAll=true;
                     Message message = new Message();
                     message.arg1 = MESSAGE_MORE;
                     handler.sendMessage(message);

@@ -18,18 +18,20 @@ public class MyApplication extends Application {
     public TicketInformation ticketInformation;
     public int cityId;
     public String filmId;
+    public boolean isRemebered;
     @Override
     public void onCreate() {
         super.onCreate();
         bitmapCache = BitmapCache.getInstance();
         userAccount = new UserAccount();
-        userAccount.setLogin(true);
+        isRemebered=false;
+        /*userAccount.setLogin(true);
         userAccount.setName("张泉单");
         userAccount.setUserId("1");
         userAccount.setBphone("13757371020");
         userAccount.setSex("男");
         userAccount.setSetportrait(false);
-        userAccount.setPwd("1234");
+        userAccount.setPwd("1234");*/
         ticketInformation = new TicketInformation();
         city = new RvCityAdapter.City();
         city.setId("1");

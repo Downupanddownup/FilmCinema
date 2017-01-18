@@ -20,7 +20,7 @@
         android:id="@+id/tv_cdetail_finfor_phone"/>
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/tv_cdetail_finfor_phone"
         android:textSize="20dp"
         android:text="地址：朝阳区33号"

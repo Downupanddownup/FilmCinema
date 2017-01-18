@@ -8,36 +8,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="59dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="4">
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:text="60号厅"
-            android:textSize="20dp"
+            android:textSize="13dp"
             android:gravity="center"
             android:id="@+id/tv_session_videonum"/>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:textSize="20dp"
             android:text="11:30"
             android:gravity="center"
             android:layout_marginLeft="20dp"
             android:id="@+id/tv_session_time"/>
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:textSize="30dp"
-            android:textColor="@color/colorRed"
+            android:textColor="@color/colorDark"
             android:text="$56"
             android:gravity="center"
             android:layout_marginLeft="30dp"
             android:id="@+id/tv_session_price"/>
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textColor="@color/colorYellow"
+            android:layout_weight="1"
             android:text="购买"
             android:gravity="center"
             android:layout_marginLeft="40dp"
@@ -46,5 +49,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/ButtomGuidBar"/>
 </LinearLayout>

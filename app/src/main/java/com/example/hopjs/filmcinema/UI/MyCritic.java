@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.hopjs.filmcinema.Adapter.MyCriticAdapter;
 import com.example.hopjs.filmcinema.Common.Transform;
+import com.example.hopjs.filmcinema.Data.UserAccount;
 import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
@@ -43,6 +44,7 @@ public class MyCritic extends AppCompatActivity {
     private Handler handler;
     private int start;
     private String userId;
+    private boolean isAll;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,18 +65,21 @@ public class MyCritic extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 swipeRefreshLayout.setRefreshing(false);
                 if(msg.arg1 == MESSAGE_MORE){
+                    myCriticAdapter.setAll(isAll);
                     myCriticAdapter.add(critics);
                 }else {
                     setCritics();
                 }
             }
         };
-        userName = "张丹阳";
+        UserAccount userAccount=((MyApplication)getApplicationContext()).userAccount;
+        userName = userAccount.getName();
         portraitId = Test.getPicture(10);
         tvTitle.setText("我 的 影 评");
         ivReturn.setOnClickListener(clickListener);
         ivSearch.setOnClickListener(clickListener);
         start = 0;
+        isAll=false;
         userId = ((MyApplication)getApplicationContext()).userAccount.getUserId();
         loadCritics();
     }
@@ -96,7 +101,8 @@ public class MyCritic extends AppCompatActivity {
             public void run() {
                 //critics = Test.getMyCritics(10);
                 critics = Connect.getMycritic(userId,start+"");
-                start += 10;
+                if(critics.size()<10)isAll=true;
+                start += critics.size();
                 handler.sendMessage(new Message());
             }
         }.start();
@@ -107,8 +113,10 @@ public class MyCritic extends AppCompatActivity {
             @Override
             public void run() {
                // critics = Test.getMyCritics(lastVisibleItem);
+                if(isAll)return;
                 critics = Connect.getMycritic(userId,start+"");
-                start += 10;
+                if(critics.size()<10)isAll=true;
+                start += critics.size();
                 Message message = new Message();
                 message.arg1 = MESSAGE_MORE;
                 handler.sendMessage(message);
@@ -118,6 +126,7 @@ public class MyCritic extends AppCompatActivity {
     private void setCritics(){
         myCriticAdapter = new MyCriticAdapter(MyCritic.this,critics,
                 userName,portraitId,itemClickListener);
+        myCriticAdapter.setAll(isAll);
         rvCritic.setLayoutManager(linearLayoutManager);
         rvCritic.setAdapter(myCriticAdapter);
     }
@@ -138,6 +147,7 @@ public class MyCritic extends AppCompatActivity {
         @Override
         public void onRefresh() {
             start = 0;
+            isAll=false;
             loadCritics();
         }
     };

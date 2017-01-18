@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rv_cdetail_film_f"
-        android:background="@android:color/background_dark">
+        android:background="@color/ButtomGuidBar">
 
     </android.support.v7.widget.RecyclerView>
     <TextView
@@ -22,9 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:numStars="5"
-        android:progressTint="@color/colorYellow"
+        android:progressTint="@color/colorWhite"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_gravity="center"
         android:id="@+id/rb_cdetail_film_scord" />
+
 
 </LinearLayout>

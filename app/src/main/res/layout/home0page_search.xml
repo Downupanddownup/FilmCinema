@@ -2,34 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="35dp"
-    android:orientation="horizontal">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/rectangle"
-        android:scaleType="fitXY"/>
-    <LinearLayout
+    android:orientation="horizontal"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <View
-            android:layout_width="30dp"
-            android:layout_height="match_parent"/>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:id="@+id/iv_home0page_search_switch"
-            android:src="@drawable/search"/>
         <EditText
-            android:layout_width="280dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="false"
             android:id="@+id/et_home0page_search_content"
+            android:background="@drawable/edit_bg"
             />
-    </LinearLayout>
-</FrameLayout>
+    <!--    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/rectangle"
+            android:scaleType="fitXY"/>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"/>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:id="@+id/iv_home0page_search_switch"
+                android:src="@drawable/search"/>
+
+        </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.hopjs.filmcinema.Network;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.example.hopjs.filmcinema.Adapter.CollectionAdapter;
 import com.example.hopjs.filmcinema.Adapter.CriticAdapter;
@@ -194,7 +195,7 @@ public class Connect {
 
 
     public static Result postBuyTicket(String sessionId,String userId,
-             String cinemaId,String buyTime,ArrayList<Integer> tickets){
+             String cinemaId,String buyTime,String filmId,ArrayList<Integer> tickets){
         //准备阶段
         Result result = new Result();
         JsonObject jsonObject = new JsonObject();
@@ -205,6 +206,7 @@ public class Connect {
         jsonObject.addProperty("sessionId",sessionId);
         jsonObject.addProperty("buyTime",buyTime);
         jsonObject.addProperty("cinemaId",cinemaId);
+        jsonObject.addProperty("filmId",filmId);
         JsonArray jsonArray = new JsonArray();
         for(int i:tickets){
             jsonArray.add(i);
@@ -228,10 +230,14 @@ public class Connect {
             data = URLDecoder.decode(data, "UTF-8");
             jsonObject = jsonParser.parse(data).getAsJsonObject();
             result.setCode(jsonObject.get("result").getAsInt());
+            Log.i("uuuuuuuuuuuuu","normal:"+result.getCode()+"");
         }catch (Exception e){
-
+            result.setCode(Result.RESULT_NOT_NETWORK);
+            Log.i("uuuuuuuuuuuuu","erro:"+result.getCode()+e.getMessage());
         }
+        Log.i("uuuuuuuuuuuuu",result.getCode()+"");
         return result;
+
     }
 
     public static Result postCritic(CriticAdapter.Critic critic){
@@ -240,17 +246,15 @@ public class Connect {
         JsonObject jsonObject = new JsonObject();
         JsonParser jsonParser = new JsonParser();
         InputStream inputStream = null;
-
-        jsonObject.addProperty("userId",critic.getId());
-        jsonObject.addProperty("filmId",critic.getFilmId());
-        jsonObject.addProperty("time",critic.getDate());
-        jsonObject.addProperty("content",critic.getContent());
-        jsonObject.addProperty("scord",critic.getScord());
-
-        TemUrl temUrl = new TemUrl();
-        temUrl.setConnectionType(NETWORK_POST_CRITIC);///
-        ///
         try {
+            jsonObject.addProperty("userId", critic.getId());
+            jsonObject.addProperty("filmId", critic.getFilmId());
+            jsonObject.addProperty("time", critic.getDate());
+            jsonObject.addProperty("content", URLEncoder.encode(critic.getContent(), "UTF-8"));
+            jsonObject.addProperty("scord", critic.getScord());
+
+            TemUrl temUrl = new TemUrl();
+            temUrl.setConnectionType(NETWORK_POST_CRITIC);///
             temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
             //通信阶段
             HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
@@ -260,13 +264,10 @@ public class Connect {
                 inputStream = httpURLConnection.getInputStream();
             }
             //解析阶段
-            String data = inputStream2String(inputStream);
-            data = URLDecoder.decode(data, "UTF-8");
-            jsonObject = jsonParser.parse(data).getAsJsonObject();
-            result.setCode(jsonObject.get("result").getAsInt());
         }catch (Exception e){
-
+                result.setCode(Result.RESULT_NOT_NETWORK);
         }
+        result.setCode(Result.RESULT_OK);
         return result;
     }
 
@@ -351,12 +352,13 @@ public class Connect {
             jsonObject = jsonParser.parse(data).getAsJsonObject();
             result.setCode(jsonObject.get("result").getAsInt());
         }catch (Exception e){
-
+            result.setCode(Result.RESULT_NOT_NETWORK);
         }
+        result.setCode(Result.RESULT_OK);
         return result;
     }
 
-    public static void postPsd(String userId,String pwd){
+    public static Result postPsd(String userId,String pwd){
         //准备阶段
         Result result = new Result();
         JsonObject jsonObject = new JsonObject();
@@ -375,9 +377,14 @@ public class Connect {
             HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
             httpURLConnection.setRequestMethod("POST");
             httpURLConnection.getResponseCode();
+            int code = httpURLConnection.getResponseCode();
+            if (code == 200) {
+                inputStream = httpURLConnection.getInputStream();
+            }
         }catch (Exception e){
-
+            result.setCode(Result.RESULT_NOT_NETWORK);
         }
+        return result;
     }
 ///
     public static Result postEdit(String userId,String userName, String sex, Bitmap portrait){
@@ -411,16 +418,18 @@ public class Connect {
         }catch (Exception e){
 
         }
+        result.setCode(Result.RESULT_NOT_NETWORK);
         return result;
     }
-    public static Result postLogin(String userName,String pwd){
+    public static UserAccount postLogin(String phone,String pwd){
         //准备阶段
+        UserAccount userAccount;
         Result result = new Result();
         JsonObject jsonObject = new JsonObject();
         JsonParser jsonParser = new JsonParser();
         InputStream inputStream = null;
 
-        jsonObject.addProperty("userName",userName);
+        jsonObject.addProperty("phone",phone);
         jsonObject.addProperty("password",pwd);
 
         TemUrl temUrl = new TemUrl();
@@ -439,11 +448,30 @@ public class Connect {
             String data = inputStream2String(inputStream);
             data = URLDecoder.decode(data, "UTF-8");
             jsonObject = jsonParser.parse(data).getAsJsonObject();
-            result.setCode(jsonObject.get("result").getAsInt());
+            if(jsonObject.get("userAccount").getAsInt()==1){
+                userAccount=null;
+            }else{
+                userAccount = new UserAccount();
+                userAccount.setUserId(jsonObject.get("id").getAsString());
+                userAccount.setName(jsonObject.get("name").getAsString());
+                userAccount.setPwd(pwd);
+                userAccount.setPortraitName(jsonObject.get("portraitName").getAsString());
+                userAccount.setSex(jsonObject.get("sex").getAsString());
+                userAccount.setBphone(phone);
+            }
         }catch (Exception e){
-
+            userAccount = new UserAccount();
+            userAccount.setSetportrait(true);
         }
-        return result;
+        /*
+        userAccount.setLogin(true);
+        userAccount.setPwd("123456");
+        userAccount.setSex("男");
+        userAccount.setPortraitName("");
+        userAccount.setName("风");
+        userAccount.setBphone("15988169467");
+        userAccount.setUserId("001");*/
+        return userAccount;
     }
     public static Result postRegister(UserAccount userAccount){
         //准备阶段
@@ -451,18 +479,14 @@ public class Connect {
         JsonObject jsonObject = new JsonObject();
         JsonParser jsonParser = new JsonParser();
         InputStream inputStream = null;
-
-        jsonObject.addProperty("userName",userAccount.getName());
-        jsonObject.addProperty("password",userAccount.getPwd());
-        jsonObject.addProperty("phone",userAccount.getBphone());
-        jsonObject.addProperty("sex",userAccount.getSex());
-
-        TemUrl temUrl = new TemUrl();
-        temUrl.setConnectionType(NETWORK_POST_REGISTER);///
-        ///
         try {
-            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(),"UTF-8"));
-            //通信阶段
+            jsonObject.addProperty("name", URLEncoder.encode(userAccount.getName(), "UTF-8"));
+            jsonObject.addProperty("password", userAccount.getPwd());
+            jsonObject.addProperty("phone", userAccount.getBphone());
+
+            TemUrl temUrl = new TemUrl();
+            temUrl.setConnectionType(NETWORK_POST_REGISTER);///
+            temUrl.addHeader("postContent", URLEncoder.encode(jsonObject.toString(), "UTF-8"));
             HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
             httpURLConnection.setRequestMethod("POST");
             int code = httpURLConnection.getResponseCode();
@@ -475,7 +499,7 @@ public class Connect {
             jsonObject = jsonParser.parse(data).getAsJsonObject();
             result.setCode(jsonObject.get("result").getAsInt());
         }catch (Exception e){
-
+            result.setCode(Result.RESULT_NOT_NETWORK);
         }
         return result;
     }
@@ -491,10 +515,12 @@ public class Connect {
         TemUrl temUrl = new TemUrl();
         temUrl.setConnectionType(NETWORK_SEARCH_FILM);///
         temUrl.addHeader("start",start);
-        temUrl.addHeader("filmNameLike",filmNameLike);
+
         ///
         try {
             //通信阶段
+            filmNameLike=URLEncoder.encode(filmNameLike,"UTF-8");
+            temUrl.addHeader("filmNameLike",URLEncoder.encode(filmNameLike,"UTF-8"));
             HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
             int code = httpURLConnection.getResponseCode();
             if (code == 200) {
@@ -516,7 +542,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+                Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -531,10 +557,12 @@ public class Connect {
         temUrl.setConnectionType(NETWORK_SEARCH_CINEMA);///
         temUrl.addHeader("cityId",cityId);
         temUrl.addHeader("start",start);
-        temUrl.addHeader("cinemaNameLike",cinemaNameLike);
+
         ///
         try {
             //通信阶段
+            cinemaNameLike=URLEncoder.encode(cinemaNameLike,"UTF-8");
+            temUrl.addHeader("cinemaNameLike",URLEncoder.encode(cinemaNameLike,"UTF-8"));
             HttpURLConnection httpURLConnection = getHttpURLConnection(temUrl.getURL());
             int code = httpURLConnection.getResponseCode();
             if (code == 200) {
@@ -555,7 +583,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -624,7 +652,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -660,7 +688,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -693,7 +721,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -731,7 +759,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-            e.getMessage();
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -769,7 +797,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -807,7 +835,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -846,11 +874,19 @@ public class Connect {
                 temContent.setlPrice(j.getAsJsonObject().get("lprice").getAsString());
                 Content.add(temContent);
             }
+            /*ArrayList<Cinema> tem = new ArrayList<>();
+            while (Content.size()>0){
+                int min=findMin(Content);
+                tem.add(Content.get(min));
+                Content.remove(min);
+            }
+            Content=tem;*/
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
+
     public static ArrayList<TicketRecordAdapter.TicketRecord> getTicketRecorder(String userId,String start){
         //准备阶段
         JsonObject jsonObject = null;
@@ -893,7 +929,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -1211,7 +1247,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -1320,7 +1356,7 @@ public class Connect {
                 Content.add(temContent);
             }
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }
@@ -1356,17 +1392,15 @@ public class Connect {
             ArrayList<SeatChoose.seat> temSeat = new ArrayList<>();
             for (JsonElement je : jsonArray2) {
                 SeatChoose.seat s = new SeatChoose.seat();
-                String tem2 = je.getAsJsonObject().get("state").getAsString();
-                s.setSeat_state(Integer.parseInt(tem2));
-                tem2 = je.getAsJsonObject().get("type").getAsString();
-                s.setSeat_type(Integer.parseInt(tem2));
-                tem2 = je.getAsJsonObject().get("seatNum").getAsString();
-                s.setSeatNum(Integer.parseInt(tem2));
+                s.setSeat_state(je.getAsJsonObject().get("state").getAsInt());
+                s.setSeat_type(je.getAsJsonObject().get("type").getAsInt());
+                s.setSeatNum(je.getAsJsonObject().get("seatNum").getAsInt());
+                s.setLovers_locat(je.getAsJsonObject().get("lovers_locat").getAsInt());
                 temSeat.add(s);
             }
             Content.setSeatList(temSeat);
         }catch (Exception e){
-
+            Log.e("iiiiiiiiiiiii",e.getMessage());
         }
         return Content;
     }

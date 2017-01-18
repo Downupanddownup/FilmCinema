@@ -208,7 +208,8 @@ public class HomePageFragment extends Fragment {
             @Override
             public void run() {
                 // nowShowingDatas = getDatas();
-                  nowShowingDatas = Connect.getNowShowingData_HomepageFilm();
+                //nowShowingDatas = Test.getNowShowing();
+                nowShowingDatas = Connect.getNowShowingData_HomepageFilm();
                 Message msg = new Message();
                 msg.arg1 = MESSAGE_NOWSHOWING;
                 handler.sendMessage(msg);
@@ -220,6 +221,7 @@ public class HomePageFragment extends Fragment {
             @Override
             public void run() {
                 // upcomingDatas = getDatas();
+                //upcomingDatas=Test.getUpcoming();
                 upcomingDatas = Connect.getUpcomingData_HomepageFilm();
                 Message msg = new Message();
                 msg.arg1 = MESSAGE_UPCOMGING;
@@ -243,14 +245,14 @@ public class HomePageFragment extends Fragment {
     }
     private void setNowShowingData(){
         HomePageFilmAdapter homePageFilmAdapter = new HomePageFilmAdapter(getActivity(),
-                nowShowingDatas, HomePageFilmAdapter.UPCOMING,nowShowingListener);
+                nowShowingDatas, HomePageFilmAdapter.NOWSHOWING,nowShowingListener);
         nowShowing.setLayoutManager(new StaggeredGridLayoutManager
                 (1,StaggeredGridLayoutManager.HORIZONTAL));
         nowShowing.setAdapter(homePageFilmAdapter);
     }
     private void setUpcomingData(){
         HomePageFilmAdapter homePageFilmAdapter2 = new HomePageFilmAdapter
-                (getActivity(),upcomingDatas, HomePageFilmAdapter.NOWSHOWING,upcomingListener);
+                (getActivity(),upcomingDatas, HomePageFilmAdapter.UPCOMING,upcomingListener);
         upcoming.setLayoutManager(new StaggeredGridLayoutManager
                 (1,StaggeredGridLayoutManager.HORIZONTAL));
         upcoming.setAdapter(homePageFilmAdapter2);

@@ -13,6 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.hopjs.filmcinema.Common.ShowTool;
 import com.example.hopjs.filmcinema.MyApplication;
 import com.example.hopjs.filmcinema.Network.Connect;
 import com.example.hopjs.filmcinema.R;
@@ -121,7 +122,7 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
                     itemClickListener.onItemClick(v,filmId);
                     break;
                 case R.id.iv_mycritic_item_praise:
-                    if(isPraise){
+                    /*if(isPraise){
                         isPraise = false;
                         //sendtoServer
                         String num = tvPraise.getText().toString();
@@ -133,7 +134,7 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
                         String num = tvPraise.getText().toString();
                         tvPraise.setText(Integer.parseInt(num)+1+"");
                         ivPraise.setImageResource(R.drawable.haspraise);
-                    }
+                    }*/
                     break;
             }
 
@@ -186,6 +187,7 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
     private int portraitId;
     private Context context;
     private OnItemClickListener itemClickListener;
+    private boolean isAll;
 
     public MyCriticAdapter(Context context,ArrayList<Critic> critics, String userName,
                            int portraitId,OnItemClickListener itemClickListener) {
@@ -194,6 +196,11 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
         this.userName = userName;
         this.portraitId = portraitId;
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setAll(boolean all) {
+        isAll = all;
+        if(isAll)notifyItemChanged(getItemCount()-1);
     }
 
     @Override
@@ -208,26 +215,30 @@ public class MyCriticAdapter extends RecyclerView.Adapter<MyCriticAdapter.ViewHo
             holder.tvFilmName.setText(critics.get(position).getFilmName());
             holder.tvName.setText(userName);
             holder.tvPraise.setText(critics.get(position).getPraise());
-            holder.tvDate.setText(critics.get(position).getDate());
+            String tem = ShowTool.showCriticTime(critics.get(position).getDate());
+            holder.tvDate.setText(tem);
             holder.tvContent.setText(critics.get(position).getContent());
-            holder.rbRating.setRating(critics.get(position).getScord());
+            holder.rbRating.setRating(critics.get(position).getScord()/2f);
             holder.isPraise = critics.get(position).isPraise;
             if(critics.get(position).isPraise){
                 holder.ivPraise.setImageResource(R.drawable.haspraise);
             }else {
                 holder.ivPraise.setImageResource(R.drawable.notpraise);
             }
-            Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
+          /*  Bitmap bitmap = ((MyApplication)context.getApplicationContext()).
                     bitmapCache.getBitmap(portraitId,context,0.01);
-            holder.ivPortrait.setImageBitmap(bitmap);
-            /*Connect.TemUrl temUrl = new Connect.TemUrl();
-            temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("filmId",critics.get(position).getId());
+            holder.ivPortrait.setImageBitmap(bitmap);*/
+            Connect.TemUrl temUrl = new Connect.TemUrl();
+            temUrl.setConnectionType(Connect.NETWORK_PORTRAIT);
+            String portraitName=((MyApplication)context.getApplicationContext()).userAccount.getPortraitName();
+            temUrl.addHeader("portraitName","Portraits/"+portraitName);
             Glide.with(context)
                     .load(temUrl.getSurl())
-                    .placeholder(R.drawable.x)
-                    .error(R.drawable.w)
-                    .into(holder.ivPortrait);*/
+                    .error(R.drawable.userportrait)
+                    .into(holder.ivPortrait);
+        }else {
+            if(isAll)holder.tvLastItem.setText("没有更多了");
+            else holder.tvLastItem.setText("正在加载...");
         }
     }
 

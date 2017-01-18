@@ -152,6 +152,8 @@ public class PosterFragment extends Fragment {
 
     private void setBigPoster(){
         ArrayList<BigPosterAdatper.PagerHolder> films = new ArrayList<>();
+        ArrayList<Integer> res = Test.getBigPosters();
+        int i=0;
         for(FilmList film:posters){
             ImageView imageView = new ImageView(getActivity());
             /*Bitmap bitmap = ((MyApplication)getContext().getApplicationContext()).bitmapCache.
@@ -162,14 +164,18 @@ public class PosterFragment extends Fragment {
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
             imageView.setLayoutParams(params);*/
             //imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
             Connect.TemUrl temUrl = new Connect.TemUrl();
             temUrl.setConnectionType(Connect.NETWORK_FILM_PICTURE);
-            temUrl.addHeader("posterName",film.getPosterName());
+            temUrl.addHeader("posterName","Posters/"+film.getPosterName());
             Glide.with(this)
                     .load(temUrl.getSurl())
-                    .placeholder(R.drawable.x)
-                    .error(R.drawable.w)
+                    .error(R.drawable.white)
+                    .override(1000,500)
                     .into(imageView);
+            i++;
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             BigPosterAdatper.PagerHolder pagerHolder = new BigPosterAdatper.PagerHolder();
             pagerHolder.poster = imageView;
             pagerHolder.id = film.getId();

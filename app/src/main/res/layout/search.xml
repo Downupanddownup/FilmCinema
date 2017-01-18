@@ -5,11 +5,12 @@
     android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/topguidbar">
         <ImageView
-            android:layout_width="20dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
             android:id="@+id/iv_search_return"
             android:layout_marginLeft="20dp"

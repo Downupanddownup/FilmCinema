@@ -6,8 +6,14 @@
     <color name="colorRed">#fa020a</color>
     <color name="colorGreen">#23fa02</color>
     <color name="colorYellow">#faf602</color>
+    <color name="colorGold">#faf602</color>
     <color name="dialogOrange">#ffe74c3c</color>
     <color name="colorDark">#191818</color>
-    <color name="colorWhite">#f8f8fa</color>
-    <color name="colorGrey">#b8b8c8</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorGrey">#a3a3b8</color>
+    <color name="ButtomGuidBar">#c7c7d4</color>
+    <color name="TopGuidBar">#ffffff</color>
+    <color name="PcenterBar">#c7c7d4</color>
+    <color name="PcenterBackground">#9898e8</color>
+    <color name="FilmDetailActorBackground">#777796</color>
 </resources>
